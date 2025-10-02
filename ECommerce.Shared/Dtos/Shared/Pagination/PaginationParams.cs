@@ -1,3 +1,5 @@
+using ECommerce.Shared.Enums;
+
 namespace ECommerce.Shared.Dtos.Shared.Pagination;
 
 public class PaginationParams
@@ -13,5 +15,5 @@ public class PaginationParams
     }
     
     public string? Filter { get; set; }
-    public string? OrderBy { get; set; } = string.Empty;
+    public OrderByOptions? OrderBy { get; set; }
 }
