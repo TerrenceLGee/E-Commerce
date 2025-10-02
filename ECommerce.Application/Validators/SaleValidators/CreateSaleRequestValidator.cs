@@ -15,10 +15,6 @@ public class CreateSaleRequestValidator : AbstractValidator<CreateSaleRequest>
             .NotEmpty().WithMessage("Street name is required")
             .MaximumLength(30).WithMessage("Street name cannot be longer than 30 characters");
 
-        RuleFor(x => x.StreetName)
-            .NotEmpty().WithMessage("Street name is required")
-            .MaximumLength(30).WithMessage("Street name cannot be longer than 30 characters");
-
         RuleFor(x => x.City)
             .NotEmpty().WithMessage("City is required")
             .MaximumLength(20).WithMessage("City name cannot be longer than 20 characters");
@@ -37,5 +33,15 @@ public class CreateSaleRequestValidator : AbstractValidator<CreateSaleRequest>
 
         RuleFor(x => x.AddressType)
             .IsInEnum().WithMessage("Invalid address type");
+
+        RuleFor(x => x.Notes)
+            .MaximumLength(2000).WithMessage("Sale notes cannot be more than 2000 characters")
+            .Must(nt => nt is null || nt.Length > 0).WithMessage("Sale notes cannot be an empty string");
+
+        RuleFor(x => x.Items)
+            .NotEmpty().WithMessage("There must be at least one item in the cart for this sale");
+
+        RuleForEach(x => x.Items)
+            .SetValidator(new SaleItemRequestValidator());
     }
 }
