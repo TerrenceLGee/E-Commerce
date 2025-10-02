@@ -11,4 +11,5 @@ public class CreateProductRequest
     public DiscountStatus Discount { get; set; }
     public int StockQuantity { get; set; }
     public int CategoryId { get; set; }
+    public bool IsActive { get; set; }
 }

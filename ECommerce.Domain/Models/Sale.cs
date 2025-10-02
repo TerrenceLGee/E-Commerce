@@ -18,5 +18,6 @@ public class Sale
     public string State { get; set; } = string.Empty;
     public string ZipCode { get; set; } = string.Empty;
     public string Country { get; set; } = string.Empty;
+    public AddressType AddressType { get; set; }
     public ICollection<SaleProduct> SaleItems { get; set; } = [];
 }

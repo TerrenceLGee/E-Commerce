@@ -1,15 +1,19 @@
 using FluentValidation;
-using ECommerce.Shared.Dtos.Addresses.Request;
+using ECommerce.Shared.Dtos.Sales.Request;
 
-namespace ECommerce.Application.Validators.AddressValidators;
+namespace ECommerce.Application.Validators.SaleValidators;
 
-public class UpdateAddressRequestValidator : AbstractValidator<UpdateAddressRequest>
+public class CreateSaleRequestValidator : AbstractValidator<CreateSaleRequest>
 {
-    public UpdateAddressRequestValidator()
+    public CreateSaleRequestValidator()
     {
         RuleFor(x => x.StreetNumber)
             .NotEmpty().WithMessage("Street number is required")
             .MaximumLength(15).WithMessage("Street number cannot be longer than 15 characters");
+
+        RuleFor(x => x.StreetName)
+            .NotEmpty().WithMessage("Street name is required")
+            .MaximumLength(30).WithMessage("Street name cannot be longer than 30 characters");
 
         RuleFor(x => x.StreetName)
             .NotEmpty().WithMessage("Street name is required")
@@ -33,6 +37,5 @@ public class UpdateAddressRequestValidator : AbstractValidator<UpdateAddressRequ
 
         RuleFor(x => x.AddressType)
             .IsInEnum().WithMessage("Invalid address type");
-
     }
 }
