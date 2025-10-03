@@ -6,7 +6,7 @@ using FluentResults;
 
 namespace ECommerce.Domain.Interfaces.Services;
 
-public interface ISalesService
+public interface ISaleService
 {
     Task<Result<SaleResponse>> CreateSaleAsync(CreateSaleRequest request, string customerId);
     Task<Result> UpdateSaleStatusAsync(int saleId, SaleStatus updatedStatus);

@@ -3,7 +3,7 @@ using ECommerce.Shared.Dtos.Shared.Pagination;
 
 namespace ECommerce.Domain.Interfaces.Repositories;
 
-public interface ISalesRepository
+public interface ISaleRepository
 {
     Task AddAsync(Sale sale);
     Task UpdateAsync(Sale sale);

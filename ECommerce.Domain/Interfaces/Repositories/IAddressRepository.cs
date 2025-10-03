@@ -8,6 +8,6 @@ public interface IAddressRepository
     Task AddAsync(Address address);
     Task UpdateAsync(Address address);
     Task DeleteAsync(Address address);
-    Task<PagedList<Address>> GetAllAddressesAsync(string customerId, PaginationParams paginationParams);
+    Task<PagedList<Address>> GetAllAsync(string customerId, PaginationParams paginationParams);
     Task<Address?> GetByIdAsync(string customerId, int addressID);
 }

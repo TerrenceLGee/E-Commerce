@@ -1,10 +1,14 @@
 using AutoMapper;
 using ECommerce.Domain.Models;
 using ECommerce.Infrastructure.Identity;
+using ECommerce.Shared.Dtos.Addresses.Request;
 using ECommerce.Shared.Dtos.Addresses.Response;
 using ECommerce.Shared.Dtos.Auth.Response;
+using ECommerce.Shared.Dtos.Categories.Request;
 using ECommerce.Shared.Dtos.Categories.Response;
+using ECommerce.Shared.Dtos.Products.Request;
 using ECommerce.Shared.Dtos.Products.Response;
+using ECommerce.Shared.Dtos.Sales.Request;
 using ECommerce.Shared.Dtos.Sales.Response;
 
 namespace ECommerce.Application.Mappings;
@@ -13,6 +17,14 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
+        CreateMap<CreateAddressRequest, Address>();
+        CreateMap<UpdateAddressRequest, Address>();
+        CreateMap<CreateCategoryRequest, Category>();
+        CreateMap<UpdateCategoryRequest, Category>();
+        CreateMap<CreateProductRequest, Product>();
+        CreateMap<UpdateProductRequest, Product>();
+        CreateMap<CreateSaleRequest, Sale>();
+        CreateMap<SaleItemRequest, SaleProduct>();
         CreateMap<Address, AddressResponse>();
         CreateMap<Category, CategoryResponse>();
         CreateMap<Product, ProductResponse>();

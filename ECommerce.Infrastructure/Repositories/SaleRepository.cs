@@ -1,0 +1,99 @@
+using ECommerce.Domain.Interfaces.Repositories;
+using ECommerce.Domain.Models;
+using ECommerce.Infrastructure.Data;
+using ECommerce.Shared.Dtos.Shared.Pagination;
+using ECommerce.Shared.Enums;
+using Microsoft.EntityFrameworkCore;
+
+namespace ECommerce.Infrastructure.Repositories;
+
+public class SaleRepository : ISaleRepository
+{
+    private readonly ApplicationDbContext _context;
+
+    public SaleRepository(ApplicationDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task AddAsync(Sale sale)
+    {
+        await _context.Sales.AddAsync(sale);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Sale sale)
+    {
+        _context.Sales.Update(sale);
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Sale?> GetByIdAsync(int id)
+    {
+        return await _context.Sales
+            .Include(s => s.SaleItems)
+            .ThenInclude(si => si.Product)
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public async Task<Sale?> GetUserSaleByIdAsync(string userId, int saleId)
+    {
+        return await _context.Sales
+            .Include(s => s.SaleItems)
+            .ThenInclude(si => si.Product)
+            .Where(s => s.CustomerId == userId)
+            .FirstOrDefaultAsync(s => s.Id == saleId);
+    }
+
+    public async Task<PagedList<Sale>> GetAllAsync(PaginationParams paginationParams)
+    {
+        var query = _context.Sales
+            .Include(s => s.SaleItems)
+            .ThenInclude(si => si.Product)
+            .AsQueryable();
+
+        query = paginationParams.OrderBy switch
+        {
+            OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
+            OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
+            OrderByOptions.CustomerIdAsc => query.OrderBy(s => s.CustomerId),
+            OrderByOptions.CustomerIdDesc => query.OrderByDescending(s => s.CustomerId),
+            OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
+            _ => query.OrderBy(s => s.Id)
+        };
+
+        var sales = await query.ToListAsync();
+        var pagedSales = new PagedList<Sale>(
+            sales,
+            sales.Count,
+            paginationParams.PageNumber,
+            paginationParams.PageSize);
+
+        return pagedSales;
+    }
+
+    public async Task<PagedList<Sale>> GetAllByUserIdAsync(string userId, PaginationParams paginationParams)
+    {
+        var query = _context.Sales
+            .Include(s => s.SaleItems)
+            .ThenInclude(si => si.Product)
+            .Where(s => s.CustomerId == userId);
+
+        query = paginationParams.OrderBy switch
+        {
+            OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
+            OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
+            OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
+            _ => query.OrderBy(s => s.Id)
+        };
+
+        var sales = await query.ToListAsync();
+        var pagedSales = new PagedList<Sale>(
+            sales,
+            sales.Count,
+            paginationParams.PageNumber,
+            paginationParams.PageSize);
+
+        return pagedSales;
+    }
+}

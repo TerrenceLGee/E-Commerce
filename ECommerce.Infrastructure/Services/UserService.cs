@@ -117,9 +117,9 @@ public class UserService : IUserService
                 return Result.Fail($"User with Id {userId} not found");
             }
 
-            var pagedAddresses = await _addressRepository.GetAllAddressesAsync(userId, paginationParams);
+            var pagedAddresses = await _addressRepository.GetAllAsync(userId, paginationParams);
 
-            var addressDtos = _mapper.Map<List<AddressResponse>>(pagedAddresses);
+            var addressDtos = _mapper.Map<List<AddressResponse>>(pagedAddresses.Items);
 
             var pagedResponse = new PagedList<AddressResponse>(
                 addressDtos,
