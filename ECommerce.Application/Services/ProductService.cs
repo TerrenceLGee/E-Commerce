@@ -153,14 +153,8 @@ public class ProductService : IProductService
         {
             var pagedProducts = await _productRepository.GetAllAsync(paginationParams);
 
-            var productDtos = _mapper.Map<List<ProductResponse>>(pagedProducts.Items);
-
-            var pagedResponse = new PagedList<ProductResponse>(
-                productDtos,
-                pagedProducts.TotalCount,
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
-
+            var pagedResponse = _mapper.Map<PagedList<ProductResponse>>(pagedProducts);
+            
             return Result.Ok(pagedResponse);
         }
         catch (ArgumentNullException ex)

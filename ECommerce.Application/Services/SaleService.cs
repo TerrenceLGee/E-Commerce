@@ -107,7 +107,19 @@ public class SaleService : ISaleService
     {
         try
         {
-            throw new NotImplementedException();
+            var saleToUpdate = await _saleRepository.GetByIdAsync(saleId);
+
+            if (saleToUpdate is null)
+            {
+                _logger.LogError("Sale with Id {id} not found", saleId);
+                return Result.Fail($"Sale with Id {saleId} not found");
+            }
+
+            saleToUpdate.Status = updatedStatus;
+            saleToUpdate.UpdatedAt = DateTime.UtcNow;
+            await _saleRepository.UpdateAsync(saleToUpdate);
+
+            return Result.Ok();
         }
         catch (ArgumentNullException ex)
         {
@@ -123,36 +135,214 @@ public class SaleService : ISaleService
 
     public async Task<Result> CancelSaleAsync(int saleId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var saleToCancel = await _saleRepository.GetByIdAsync(saleId);
+
+            if (saleToCancel is null)
+            {
+                _logger.LogError("Sale with Id {id} not found", saleId);
+                return Result.Fail($"Sale with Id {saleId} not found");
+            }
+
+            if (saleToCancel.Status != SaleStatus.Pending && saleToCancel.Status != SaleStatus.Pending)
+            {
+                _logger.LogError("Enable to cancel a Sale with status: {status}", saleToCancel.Status);
+                return Result.Fail($"Unable to cancel a Sale with status: {saleToCancel.Status}");
+            }
+
+            foreach (var item in saleToCancel.SaleItems)
+            {
+                item.Product.StockQuantity += item.Quantity;
+            }
+
+            saleToCancel.Status = SaleStatus.Canceled;
+            saleToCancel.UpdatedAt = DateTime.UtcNow;
+            await _saleRepository.UpdateAsync(saleToCancel);
+            return Result.Ok();
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error canceling the Sale: {errorMessage}", ex);
+            return Result.Fail($"There was an error canceling the Sale: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result> RefundSaleAsync(int saleId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var saleToRefund = await _saleRepository.GetByIdAsync(saleId);
+
+            if (saleToRefund is null)
+            {
+                _logger.LogError("Sale with Id {id} not found", saleId);
+                return Result.Fail($"Sale with Id {saleId} not found");
+            }
+
+            if (saleToRefund.Status != SaleStatus.Completed)
+            {
+                _logger.LogError("Unable to refund a Sale with status: {saleToRefund}", saleToRefund.Status);
+                return Result.Fail($"Unable to refund a Sale with status: {saleToRefund.Status}");
+            }
+
+            saleToRefund.Status = SaleStatus.Refunded;
+            saleToRefund.UpdatedAt = DateTime.UtcNow;
+            await _saleRepository.UpdateAsync(saleToRefund);
+
+            return Result.Ok();
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error refunding the Sale: {errorMessage}", ex);
+            return Result.Fail($"There was an error refunding the Sale: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result> UserCancelSaleAsync(string userId, int saleId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var userSaleToCancel = await _saleRepository.GetUserSaleByIdAsync(userId, saleId);
+
+            if (userSaleToCancel is null)
+            {
+                _logger.LogError("Sale with Id {id} not found", saleId);
+                return Result.Fail($"Sale with Id {saleId} not found");
+            }
+
+            if (userSaleToCancel.Status != SaleStatus.Pending && userSaleToCancel.Status != SaleStatus.Processing)
+            {
+                _logger.LogError("Unable to cancel a Sale with status: {status}", userSaleToCancel.Status);
+                return Result.Fail($"Unable to cancel a sale with status: {userSaleToCancel.Status}");
+            }
+
+            foreach (var item in userSaleToCancel.SaleItems)
+            {
+                item.Product.StockQuantity += item.Quantity;
+            }
+
+            userSaleToCancel.Status = SaleStatus.Canceled;
+            userSaleToCancel.UpdatedAt = DateTime.UtcNow;
+            await _saleRepository.UpdateAsync(userSaleToCancel);
+            return Result.Ok();
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error canceling the Sale: {errorMessage}", ex);
+            return Result.Fail($"There was an error canceling the Sale: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<PagedList<SaleResponse>>> GetAllSalesAsync(PaginationParams paginationParams)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var pagedSales = await _saleRepository.GetAllAsync(paginationParams);
+
+            var pagedResponse = _mapper.Map<PagedList<SaleResponse>>(pagedSales);
+
+            return Result.Ok(pagedResponse);
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error retrieving sales: {errorMessage}", ex);
+            return Result.Fail($"There was an error retrieving sales: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<SaleResponse>> GetSaleByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var sale = await _saleRepository.GetByIdAsync(id);
+
+            if (sale is null)
+            {
+                _logger.LogError("Sale with Id {id} not found", id);
+                return Result.Fail($"Sale with Id {id} not found");
+            }
+
+            return Result.Ok(_mapper.Map<SaleResponse>(sale));
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error retrieving sale: {errorMessage}", ex);
+            return Result.Fail($"There was an error retrieving sale: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<PagedList<SaleResponse>>> GetUserSalesAsync(string userId, PaginationParams paginationParams)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var pagedSales = await _saleRepository.GetAllByUserIdAsync(userId, paginationParams);
+
+            var pagedResponse = _mapper.Map<PagedList<SaleResponse>>(pagedSales);
+
+            return Result.Ok(pagedResponse);
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error retrieving sales: {errorMessage}", ex);
+            return Result.Fail($"There was an error retrieving sales: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
     }
 
     public async Task<Result<SaleResponse>> GetUserSaleByIdAsync(string userId, int saleId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var sale = await _saleRepository.GetUserSaleByIdAsync(userId, saleId);
+
+            if (sale is null)
+            {
+                _logger.LogError("Sale with with Id {id} not found", saleId);
+                return Result.Fail($"Sale with Id {saleId} not found");
+            }
+
+            return Result.Ok(_mapper.Map<SaleResponse>(sale));
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogCritical("There was an error retrieving sale: {errorMessage}", ex);
+            return Result.Fail($"There was an error retrieving sale: {ex.Message}");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical("There was an unexpected error that occurred:  {errorMessage}", ex);
+            return Result.Fail($"There was an unexpected error that occurred: {ex.Message}");
+        }
+        
     }
 }

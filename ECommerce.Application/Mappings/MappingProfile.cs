@@ -10,6 +10,7 @@ using ECommerce.Shared.Dtos.Products.Request;
 using ECommerce.Shared.Dtos.Products.Response;
 using ECommerce.Shared.Dtos.Sales.Request;
 using ECommerce.Shared.Dtos.Sales.Response;
+using ECommerce.Shared.Dtos.Shared.Pagination;
 
 namespace ECommerce.Application.Mappings;
 
@@ -20,9 +21,11 @@ public class MappingProfile : Profile
         CreateMap<CreateAddressRequest, Address>();
         CreateMap<UpdateAddressRequest, Address>();
         CreateMap<CreateCategoryRequest, Category>();
-        CreateMap<UpdateCategoryRequest, Category>();
+        CreateMap<UpdateCategoryRequest, Category>()
+            .AfterMap((src, dest) => dest.UpdatedAt = DateTime.UtcNow);
         CreateMap<CreateProductRequest, Product>();
-        CreateMap<UpdateProductRequest, Product>();
+        CreateMap<UpdateProductRequest, Product>()
+            .AfterMap((src, dest) => dest.UpdatedAt = DateTime.UtcNow);
         CreateMap<CreateSaleRequest, Sale>();
         CreateMap<SaleItemRequest, SaleProduct>();
         CreateMap<Address, AddressResponse>();
@@ -35,6 +38,8 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.EmailAddress, opt => opt.MapFrom(src => src.Email))
             .ForMember(dest => dest.BirthDate, opt => opt.MapFrom(src => src.DateOfBirth))
             .ForMember(dest => dest.Age, opt => opt.MapFrom(src => GetCorrectAgeForUser(src.DateOfBirth)));
+        CreateMap(typeof(PagedList<>), typeof(PagedList<>))
+            .ConvertUsing(typeof(PagedListTypeConverter<,>));
     }
 
     private static int GetCorrectAgeForUser(DateOnly birthDate)

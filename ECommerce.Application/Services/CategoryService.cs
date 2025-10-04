@@ -137,13 +137,7 @@ public class CategoryService : ICategoryService
         {
             var pagedCategories = await _categoryRepository.GetAllAsync(paginationParams);
 
-            var categoryDtos = _mapper.Map<List<CategoryResponse>>(pagedCategories.Items);
-
-            var pagedResponse = new PagedList<CategoryResponse>(
-                categoryDtos,
-                pagedCategories.TotalCount,
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+            var pagedResponse = _mapper.Map<PagedList<CategoryResponse>>(pagedCategories);
 
             return pagedResponse;
         }

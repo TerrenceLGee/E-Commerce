@@ -119,13 +119,7 @@ public class UserService : IUserService
 
             var pagedAddresses = await _addressRepository.GetAllAsync(userId, paginationParams);
 
-            var addressDtos = _mapper.Map<List<AddressResponse>>(pagedAddresses.Items);
-
-            var pagedResponse = new PagedList<AddressResponse>(
-                addressDtos,
-                pagedAddresses.TotalCount,
-                pagedAddresses.CurrentPage,
-                pagedAddresses.PageSize);
+            var pagedResponse = _mapper.Map<PagedList<AddressResponse>>(pagedAddresses);
 
             return Result.Ok(pagedResponse);
         }
