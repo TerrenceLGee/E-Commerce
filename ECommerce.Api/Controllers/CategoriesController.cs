@@ -87,7 +87,7 @@ public class CategoriesController : ControllerBase
         return Ok(result.Value);
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult<CategoryResponse>> DeleteCategory([FromRoute] int id)
     {

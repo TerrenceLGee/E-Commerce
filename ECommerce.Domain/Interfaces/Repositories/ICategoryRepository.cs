@@ -9,5 +9,5 @@ public interface ICategoryRepository
     Task UpdateAsync(Category category);
     Task<bool> ExistsAsync(int id);
     Task<Category?> GetByIdAsync(int id);
-    Task<PagedList<Category>> GetAllAsync(PaginationParams paginationParams);
+    IQueryable<Category> GetAllQueryable();
 }

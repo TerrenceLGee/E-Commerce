@@ -4,7 +4,10 @@ using ECommerce.Shared.Dtos.Categories.Response;
 using ECommerce.Shared.Dtos.Shared.Pagination;
 using ECommerce.Domain.Models;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ECommerce.Domain.Interfaces.Repositories;
+using ECommerce.Infrastructure.Extensions;
+using ECommerce.Shared.Enums;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -135,11 +138,29 @@ public class CategoryService : ICategoryService
     {
         try
         {
-            var pagedCategories = await _categoryRepository.GetAllAsync(paginationParams);
+            var query = _categoryRepository.GetAllQueryable();
+                
 
-            var pagedResponse = _mapper.Map<PagedList<CategoryResponse>>(pagedCategories);
+            if (!string.IsNullOrEmpty(paginationParams.Filter))
+            {
+                query = query.Where(c => c.Name.ToLower() == paginationParams.Filter.ToLower());
+            }
 
-            return pagedResponse;
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.NameAsc => query.OrderBy(c => c.Name),
+                OrderByOptions.NameDesc => query.OrderByDescending(c => c.Name),
+                OrderByOptions.IdDesc => query.OrderByDescending(c => c.Id),
+                _ => query.OrderBy(c => c.Id)
+            };
+
+            var projectedQuery = query.ProjectTo<CategoryResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                paginationParams.PageNumber,
+                paginationParams.PageSize);
+
+            return Result.Ok(pagedResponse);
         }
         catch (ArgumentNullException ex)
         {

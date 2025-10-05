@@ -30,6 +30,7 @@ public class MappingProfile : Profile
         CreateMap<SaleItemRequest, SaleProduct>();
         CreateMap<Address, AddressResponse>();
         CreateMap<Category, CategoryResponse>();
+        CreateMap<Category, ProductCategoryResponse>();
         CreateMap<Product, ProductResponse>();
         CreateMap<Sale, SaleResponse>();
         CreateMap<SaleProduct, SaleProductResponse>();

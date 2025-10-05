@@ -21,7 +21,6 @@ public class SalesController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> CreateSale([FromBody] CreateSaleRequest request)
     {
         var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);

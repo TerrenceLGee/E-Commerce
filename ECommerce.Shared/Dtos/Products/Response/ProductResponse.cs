@@ -13,5 +13,5 @@ public class ProductResponse
     public DiscountStatus Discount { get; set; }
     public int StockQuantity { get; set; }
     public bool IsActive { get; set; }
-    public CategoryResponse Category { get; set; } = null!;
+    public ProductCategoryResponse Category { get; set; } = null!;
 }

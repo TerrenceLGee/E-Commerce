@@ -1,11 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ECommerce.Domain.Interfaces.Repositories;
 using ECommerce.Domain.Interfaces.Services;
 using ECommerce.Domain.Models;
+using ECommerce.Infrastructure.Extensions;
 using ECommerce.Shared.Dtos.Addresses.Request;
 using ECommerce.Shared.Dtos.Addresses.Response;
 using ECommerce.Shared.Dtos.Shared.Pagination;
+using ECommerce.Shared.Enums;
 using FluentResults;
 using Microsoft.Extensions.Logging;
 
@@ -108,9 +111,19 @@ public class AddressService : IAddressService
     {
         try
         {
-            var pagedAddresses = await _addressRepository.GetAllAsync(customerId, paginationParams);
+            var query = _addressRepository.GetAllQueryable(customerId);
 
-            var pagedResponse = _mapper.Map<PagedList<AddressResponse>>(pagedAddresses);
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.CustomerIdDesc => query.OrderByDescending(a => a.CustomerId),
+                _ => query.OrderBy(a => a.CustomerId)
+            };
+
+            var projectedQuery = query.ProjectTo<AddressResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                paginationParams.PageNumber,
+                paginationParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

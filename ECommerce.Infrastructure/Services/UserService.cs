@@ -61,7 +61,7 @@ public class UserService : IUserService
         }
         catch (ArgumentNullException ex)
         {
-            _logger.LogCritical("Unable to retrieve users from the database");
+            _logger.LogCritical("Unable to retrieve users from the database: {errorMessage}", ex.Message);
             return Result.Fail("Unable to retrieve users from the database");
         }
         catch (Exception ex)
@@ -91,7 +91,7 @@ public class UserService : IUserService
         }
         catch (ArgumentNullException ex)
         {
-            _logger.LogError("Unable to retrieve user with Id {id} from the database", userId);
+            _logger.LogError("Unable to retrieve user with Id {id} from the database: {errorMessage}", userId, ex.Message);
             return Result.Fail($"Unable to retrieve user with Id {userId} from the database");
         }
         catch (Exception ex)
@@ -117,15 +117,24 @@ public class UserService : IUserService
                 return Result.Fail($"User with Id {userId} not found");
             }
 
-            var pagedAddresses = await _addressRepository.GetAllAsync(userId, paginationParams);
+            var query = _addressRepository.GetAllQueryable(userId);
 
-            var pagedResponse = _mapper.Map<PagedList<AddressResponse>>(pagedAddresses);
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.CustomerIdDesc => query.OrderBy(a => a.CustomerId),
+                _ => query.OrderBy(a => a.CustomerId)
+            };
+
+            var projectedQuery = query.ProjectTo<AddressResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse =
+                await projectedQuery.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }
         catch (ArgumentNullException ex)
         {
-            _logger.LogError("Unable to retrieve addresses from the database");
+            _logger.LogError("Unable to retrieve addresses from the database: {errorMessage}", ex.Message);
             return Result.Fail("Unable to retrieve addresses from the database");
         }
         catch (Exception ex)

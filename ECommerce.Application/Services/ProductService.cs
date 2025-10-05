@@ -2,9 +2,12 @@ using ECommerce.Domain.Interfaces.Services;
 using ECommerce.Shared.Dtos.Shared.Pagination;
 using ECommerce.Domain.Models;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ECommerce.Domain.Interfaces.Repositories;
+using ECommerce.Infrastructure.Extensions;
 using ECommerce.Shared.Dtos.Products.Request;
 using ECommerce.Shared.Dtos.Products.Response;
+using ECommerce.Shared.Enums;
 using FluentResults;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -151,9 +154,28 @@ public class ProductService : IProductService
     {
         try
         {
-            var pagedProducts = await _productRepository.GetAllAsync(paginationParams);
+            var query = _productRepository.GetAllQueryable();
 
-            var pagedResponse = _mapper.Map<PagedList<ProductResponse>>(pagedProducts);
+            if (!string.IsNullOrEmpty(paginationParams.Filter))
+            {
+                query = query.Where(p => p.Category.Name.ToLower() == paginationParams.Filter.ToLower());
+            }
+
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.NameAsc => query.OrderBy(p => p.Name),
+                OrderByOptions.NameDesc => query.OrderByDescending(p => p.Name),
+                OrderByOptions.PriceAsc => query.OrderBy(p => p.Price),
+                OrderByOptions.PriceDesc => query.OrderByDescending(p => p.Price),
+                OrderByOptions.IdDesc => query.OrderByDescending(p => p.Id),
+                _ => query.OrderBy(p => p.Id)
+            };
+
+            var projectedQuery = query.ProjectTo<ProductResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                paginationParams.PageNumber,
+                paginationParams.PageSize);
             
             return Result.Ok(pagedResponse);
         }

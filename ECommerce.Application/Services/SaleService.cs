@@ -3,7 +3,9 @@ using ECommerce.Shared.Dtos.Shared.Pagination;
 using ECommerce.Domain.Models;
 using ECommerce.Shared.Enums;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using ECommerce.Domain.Interfaces.Repositories;
+using ECommerce.Infrastructure.Extensions;
 using ECommerce.Shared.Dtos.Sales.Request;
 using ECommerce.Shared.Dtos.Sales.Response;
 using FluentResults;
@@ -253,9 +255,23 @@ public class SaleService : ISaleService
     {
         try
         {
-            var pagedSales = await _saleRepository.GetAllAsync(paginationParams);
+            var query = _saleRepository.GetSalesQueryable();
 
-            var pagedResponse = _mapper.Map<PagedList<SaleResponse>>(pagedSales);
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
+                OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
+                OrderByOptions.CustomerIdAsc => query.OrderBy(s => s.CustomerId),
+                OrderByOptions.CustomerIdDesc => query.OrderByDescending(s => s.CustomerId),
+                OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
+                _ => query.OrderBy(s => s.Id)
+            };
+
+            var projectedQuery = query.ProjectTo<SaleResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                paginationParams.PageNumber,
+                paginationParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }
@@ -301,9 +317,21 @@ public class SaleService : ISaleService
     {
         try
         {
-            var pagedSales = await _saleRepository.GetAllByUserIdAsync(userId, paginationParams);
+            var query = _saleRepository.GetAllSalesByUserIdQueryable(userId);
 
-            var pagedResponse = _mapper.Map<PagedList<SaleResponse>>(pagedSales);
+            query = paginationParams.OrderBy switch
+            {
+                OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
+                OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
+                OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
+                _ => query.OrderBy(s => s.Id)
+            };
+
+            var projectedQuery = query.ProjectTo<SaleResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                paginationParams.PageNumber,
+                paginationParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

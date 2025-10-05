@@ -45,55 +45,15 @@ public class SaleRepository : ISaleRepository
             .FirstOrDefaultAsync(s => s.Id == saleId);
     }
 
-    public async Task<PagedList<Sale>> GetAllAsync(PaginationParams paginationParams)
+    public IQueryable<Sale> GetSalesQueryable()
     {
-        var query = _context.Sales
-            .Include(s => s.SaleItems)
-            .ThenInclude(si => si.Product)
-            .AsQueryable();
-
-        query = paginationParams.OrderBy switch
-        {
-            OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
-            OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
-            OrderByOptions.CustomerIdAsc => query.OrderBy(s => s.CustomerId),
-            OrderByOptions.CustomerIdDesc => query.OrderByDescending(s => s.CustomerId),
-            OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
-            _ => query.OrderBy(s => s.Id)
-        };
-
-        var sales = await query.ToListAsync();
-        var pagedSales = new PagedList<Sale>(
-            sales,
-            sales.Count,
-            paginationParams.PageNumber,
-            paginationParams.PageSize);
-
-        return pagedSales;
+        return _context.Sales.AsQueryable();
     }
 
-    public async Task<PagedList<Sale>> GetAllByUserIdAsync(string userId, PaginationParams paginationParams)
+    public IQueryable<Sale> GetAllSalesByUserIdQueryable(string userId)
     {
-        var query = _context.Sales
-            .Include(s => s.SaleItems)
-            .ThenInclude(si => si.Product)
-            .Where(s => s.CustomerId == userId);
-
-        query = paginationParams.OrderBy switch
-        {
-            OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
-            OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
-            OrderByOptions.IdDesc => query.OrderByDescending(s => s.Id),
-            _ => query.OrderBy(s => s.Id)
-        };
-
-        var sales = await query.ToListAsync();
-        var pagedSales = new PagedList<Sale>(
-            sales,
-            sales.Count,
-            paginationParams.PageNumber,
-            paginationParams.PageSize);
-
-        return pagedSales;
+        return _context.Sales
+            .Where(s => s.CustomerId == userId)
+            .AsQueryable();
     }
 }

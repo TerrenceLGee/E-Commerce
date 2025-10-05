@@ -83,7 +83,7 @@ public class DataSeeder
             {
                 Name = "Laptop Pro",
                 Description = "High performance laptop, comes with 32GB memory and 2 TB SSD Drive",
-                Price = 12.99m,
+                Price = 1200.99m,
                 Discount = DiscountStatus.TenPercent,
                 StockQuantity = 75,
                 CategoryId = categories[0].Id,

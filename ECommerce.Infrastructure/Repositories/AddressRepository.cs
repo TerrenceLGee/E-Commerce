@@ -34,32 +34,11 @@ public class AddressRepository : IAddressRepository
         await _context.SaveChangesAsync();
     }
 
-    public async Task<PagedList<Address>> GetAllAsync(string customerId, PaginationParams paginationParams)
+    public IQueryable<Address> GetAllQueryable(string customerId)
     {
-        var query = _context.Addresses
+        return _context.Addresses
             .Where(a => a.CustomerId == customerId)
             .AsQueryable();
-
-        if (!string.IsNullOrEmpty(paginationParams.Filter))
-        {
-            query = query.Where(a => a.AddressType.ToString() == paginationParams.Filter);
-        }
-
-        query = paginationParams.OrderBy switch
-        {
-            OrderByOptions.IdAsc => query.OrderBy(a => a.Id),
-            OrderByOptions.IdDesc => query.OrderByDescending(a => a.Id),
-            _ => query.OrderBy(p => p.AddressType)
-        };
-
-        var addresses = await query.ToListAsync();
-        var pagedAddresses = new PagedList<Address>(
-            addresses, 
-            addresses.Count, 
-            paginationParams.PageNumber,
-            paginationParams.PageSize);
-
-        return pagedAddresses;
     }
 
     public async Task<Address?> GetByIdAsync(string customerId, int addressId)

@@ -41,31 +41,9 @@ public class CategoryRepository : ICategoryRepository
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<PagedList<Category>> GetAllAsync(PaginationParams paginationParams)
+    public IQueryable<Category> GetAllQueryable()
     {
-        var query = _context.Categories
-            .Include(c => c.Products)
+        return _context.Categories
             .AsQueryable();
-
-        if (!string.IsNullOrEmpty(paginationParams.Filter))
-        {
-            query = query.Where(c => c.Name.ToLower() == paginationParams.Filter.ToLower());
-        }
-
-        query = paginationParams.OrderBy switch
-        {
-            OrderByOptions.NameAsc => query.OrderBy(c => c.Name),
-            OrderByOptions.NameDesc => query.OrderByDescending(c => c.Name),
-            _ => query.OrderBy(c => c.Id)
-        };
-
-        var categories = await query.ToListAsync();
-        var pagedCategories = new PagedList<Category>(
-            categories,
-            categories.Count,
-            paginationParams.PageNumber,
-            paginationParams.PageSize);
-
-        return pagedCategories;
     }
 }

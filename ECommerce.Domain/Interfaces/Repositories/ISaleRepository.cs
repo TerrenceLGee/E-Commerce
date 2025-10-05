@@ -9,6 +9,6 @@ public interface ISaleRepository
     Task UpdateAsync(Sale sale);
     Task<Sale?> GetByIdAsync(int id);
     Task<Sale?> GetUserSaleByIdAsync(string userId, int saleId);
-    Task<PagedList<Sale>> GetAllAsync(PaginationParams paginationParams);
-    Task<PagedList<Sale>> GetAllByUserIdAsync(string userId, PaginationParams paginationParams);
+    IQueryable<Sale> GetSalesQueryable();
+    IQueryable<Sale> GetAllSalesByUserIdQueryable(string userId);
 }
