@@ -7,7 +7,7 @@ namespace ECommerce.AvaloniaClient.Interfaces.Api;
 
 public interface ISalesApiService
 {
-    Task<SaleResponse> CreateSaleAsync(CreateSaleRequest saleRequest);
+    Task<SaleResponse?> CreateSaleAsync(CreateSaleRequest saleRequest);
     Task<bool> UpdateSaleAsync(int id, UpdateSaleStatusRequest updateRequest);
     Task<bool> RefundSaleAsync(int id);
     Task<bool> CancelSaleAsync(int id);

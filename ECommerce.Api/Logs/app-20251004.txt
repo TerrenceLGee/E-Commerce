@@ -2202,3 +2202,4 @@ ORDER BY [a1].[Id]
 2025-10-04 21:00:12 [INF] Executed action ECommerce.Api.Controllers.UsersController.GetAllUsers (ECommerce.Api) in 49.4753ms
 2025-10-04 21:00:12 [INF] Executed endpoint 'ECommerce.Api.Controllers.UsersController.GetAllUsers (ECommerce.Api)'
 2025-10-04 21:00:12 [INF] Request finished HTTP/2 GET https://localhost:7240/api/Users - 200 null application/json; charset=utf-8 59.9879ms
+2025-10-04 21:48:46 [INF] Application is shutting down...
