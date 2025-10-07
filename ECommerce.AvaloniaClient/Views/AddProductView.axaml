@@ -1,0 +1,80 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.AddProductView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             xmlns:local="using:ECommerce.AvaloniaClient.Helpers"
+             x:DataType="vm:AddProductViewModel">
+    <Control.Resources>
+        <local:EnumToIntConverter x:Key="enumToIntConverter"/>
+    </Control.Resources>
+    <UserControl.Styles>
+        <Style Selector="TextBlock.Error">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+    </UserControl.Styles>
+    <Border Padding="20" CornerRadius="5" Background="#2d2d2d">
+        <Grid>
+            <ScrollViewer IsVisible="{Binding !IsInConfirmationMode}">
+                <StackPanel Spacing="10" Margin="10">
+                    <TextBlock Text="Product Name"/>
+                    <TextBox Text="{Binding ProductName, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding ProductNameErrors}"/>
+                    
+                    <TextBlock Text="Description"/>
+                    <TextBox Text="{Binding Description, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding DescriptionErrors}"/>
+                    
+                    <TextBlock Text="Stock Keeping Unit"/>
+                    <TextBox Text="{Binding StockKeepingUnit, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding StockKeepingUnitErrors}"/>
+                    
+                    <TextBlock Text="Product Price"/>
+                    <TextBox Text="{Binding Price, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding PriceErrors}"/>
+                    
+                    <TextBlock Text="Discount"/>
+                    <ComboBox ItemsSource="{Binding AvailableDiscounts}"
+                              SelectedItem="{Binding SelectedDiscount}"/>
+                    <TextBlock Classes="Error" Text="{Binding DiscountErrors}"/>
+                    
+                    <TextBlock Text="Quantity"/>
+                    <TextBox Text="{Binding StockQuantity, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding StockQuantityErrors}"/>
+                    
+                    <TextBlock Text="Category"/>
+                    <ComboBox ItemsSource="{Binding AvailableCategories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              DisplayMemberBinding="{Binding Name}"
+                              PlaceholderText="-- Select a Category --"/>
+                    <TextBlock Classes="Error" Text="{Binding CategoryErrors}"/>
+                    
+                    <CheckBox Content="Is Product Active" IsChecked="{Binding IsActive}"/>
+                    <Button Content="Add Product" Command="{Binding AddProductCommand}" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Classes="Error" IsVisible="{Binding !!ErrorMessage}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <StackPanel
+                Spacing="15"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                IsVisible="{Binding IsInConfirmationMode}">
+                <TextBlock Text="Product Added Successfully!" FontSize="22" FontWeight="Bold" Foreground="LightGreen" HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding AddedProduct.Name, FallbackValue='Unable to display product name'}"/>
+                <TextBlock Text="{Binding AddedProduct.Description, FallbackValue='Unable to display description'}"/>
+                <TextBlock Text="{Binding AddedProduct.StockKeepingUnit, FallbackValue='Unable to display Stock Keeping Unit'}"/>
+                <TextBlock Text="{Binding AddedProduct.Price, StringFormat={}{0:C}, FallbackValue='Unable to display Price'}"/>
+                <TextBlock Text="{Binding AddedProduct.Discount, Converter = {StaticResource enumToIntConverter}, FallbackValue = 'Unable to display Discount'}"/>
+                <TextBlock Text="{Binding AddedProduct.StockQuantity, FallbackValue='Unable to display Quantity'}"/>
+                <TextBlock Text="{Binding AddedProduct.IsActive, FallbackValue='Unable to display active status'}"/>
+                <TextBlock Text="{Binding AddedProduct.Category.Name, FallbackValue='Unable to display Category'}"/>
+                <Button Content="Add Another Product" Command="{Binding AddAnotherProductCommand}" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
