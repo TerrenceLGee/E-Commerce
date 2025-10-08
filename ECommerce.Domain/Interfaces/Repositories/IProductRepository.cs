@@ -9,5 +9,6 @@ public interface IProductRepository
     Task UpdateAsync(Product product);
     Task<Product?> GetByIdAsync(int id);
     IQueryable<Product> GetAllQueryable();
+    IQueryable<Product> GetAllByCategoryIdQueryable(int categoryId);
     Task<List<Product>> GetByIdsAsync(IEnumerable<int> ids);
 }

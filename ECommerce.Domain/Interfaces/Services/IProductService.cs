@@ -11,5 +11,8 @@ public interface IProductService
     Task<Result<ProductResponse>> UpdateProductAsync(int id, UpdateProductRequest request);
     Task<Result<ProductResponse>> DeleteProductAsync(int id);
     Task<Result<ProductResponse>> GetProductByIdAsync(int id);
-    Task<Result<PagedList<ProductResponse>>> GetAllProductsAsync(PaginationParams paginationParams);
+    Task<Result<PagedList<ProductResponse>>> GetAllProductsAsync(ProductQueryParams queryParams);
+
+    Task<Result<PagedList<ProductResponse>>> GetAllProductsByCategoryIdAsync(int categoryId,
+        ProductQueryParams queryParams);
 }

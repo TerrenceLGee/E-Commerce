@@ -12,8 +12,8 @@ public interface ISalesApiService
     Task<bool> RefundSaleAsync(int id);
     Task<bool> CancelSaleAsync(int id);
     Task<bool> UserCancelSaleAsync(int id);
-    Task<PagedList<SaleResponse>?> GetAllSalesAsync(PaginationParams paginationParams);
-    Task<PagedList<SaleResponse>?> GetAllSalesForUserAsync(PaginationParams paginationParams);
+    Task<PagedList<SaleResponse>?> GetAllSalesAsync(SaleQueryParams queryParams);
+    Task<PagedList<SaleResponse>?> GetAllSalesForUserAsync(SaleQueryParams queryParams);
     Task<SaleResponse?> GetSaleForUserByIdAsync(int saleId);
     Task<SaleResponse?> GetSaleByIdAsync(int saleId);
 }

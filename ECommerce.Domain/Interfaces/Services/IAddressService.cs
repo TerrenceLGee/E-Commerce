@@ -10,6 +10,6 @@ public interface IAddressService
     Task<Result<AddressResponse>> AddAddressAsync(string customerId, CreateAddressRequest request);
     Task<Result<AddressResponse>> UpdateAddressAsync(string customerId, int addressId, UpdateAddressRequest request);
     Task<Result<AddressResponse>> DeleteAddressAsync(string customerId, int addressId);
-    Task<Result<PagedList<AddressResponse>>> GetAllAddressesAsync(string customerId, PaginationParams paginationParams);
+    Task<Result<PagedList<AddressResponse>>> GetAllAddressesAsync(string customerId, AddressQueryParams queryParams);
     Task<Result<AddressResponse>> GetAddressByIdAsync(string customerId, int addressId);
 }

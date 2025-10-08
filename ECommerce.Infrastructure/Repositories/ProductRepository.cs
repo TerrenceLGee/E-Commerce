@@ -38,6 +38,15 @@ public class ProductRepository : IProductRepository
     public IQueryable<Product> GetAllQueryable()
     {
         return _context.Products
+            .Include(p => p.Category)
+            .AsQueryable();
+    }
+
+    public IQueryable<Product> GetAllByCategoryIdQueryable(int categoryId)
+    {
+        return _context.Products
+            .Where(p => p.CategoryId == categoryId)
+            .Include(p => p.Category)
             .AsQueryable();
     }
 

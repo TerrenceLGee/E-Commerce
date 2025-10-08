@@ -13,8 +13,8 @@ public interface ISaleService
     Task<Result> CancelSaleAsync(int saleId);
     Task<Result> RefundSaleAsync(int saleId);
     Task<Result> UserCancelSaleAsync(string userId, int saleId);
-    Task<Result<PagedList<SaleResponse>>> GetAllSalesAsync(PaginationParams paginationParams);
+    Task<Result<PagedList<SaleResponse>>> GetAllSalesAsync(SaleQueryParams queryParams);
     Task<Result<SaleResponse>> GetSaleByIdAsync(int id);
-    Task<Result<PagedList<SaleResponse>>> GetUserSalesAsync(string userId, PaginationParams paginationParams);
+    Task<Result<PagedList<SaleResponse>>> GetUserSalesAsync(string userId, SaleQueryParams queryParams);
     Task<Result<SaleResponse>> GetUserSaleByIdAsync(string userId, int saleId);
 }

@@ -10,6 +10,7 @@ public interface IProductsApiService
     Task<ProductResponse?> CreateProductAsync(CreateProductRequest request);
     Task<ProductResponse?> UpdateProductAsync(int id, UpdateProductRequest request);
     Task<ProductResponse?> DeleteProductAsync(int id);
-    Task<PagedList<ProductResponse>?> GetProductsAsync(PaginationParams paginationParams);
+    Task<PagedList<ProductResponse>?> GetProductsAsync(ProductQueryParams queryParams);
+    Task<PagedList<ProductResponse>?> GetProductsByCategoryId(int categoryId, ProductQueryParams queryParams);
     Task<ProductResponse?> GetProductByIdAsync(int id);
 }

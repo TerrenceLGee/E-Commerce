@@ -251,13 +251,43 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<Result<PagedList<SaleResponse>>> GetAllSalesAsync(PaginationParams paginationParams)
+    public async Task<Result<PagedList<SaleResponse>>> GetAllSalesAsync(SaleQueryParams queryParams)
     {
         try
         {
             var query = _saleRepository.GetSalesQueryable();
 
-            query = paginationParams.OrderBy switch
+            if (queryParams.CreatedAt.HasValue)
+            {
+                query = query.Where(s => s.CreatedAt == queryParams.CreatedAt.Value);
+            }
+
+            if (queryParams.UpdatedAt.HasValue)
+            {
+                query = query.Where(s => s.UpdatedAt == queryParams.UpdatedAt.Value);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.CustomerId))
+            {
+                query = query.Where(s => s.CustomerId == queryParams.CustomerId);
+            }
+
+            if (queryParams.MinPrice.HasValue)
+            {
+                query = query.Where(s => s.TotalPrice >= queryParams.MinPrice.Value);
+            }
+
+            if (queryParams.MaxPrice.HasValue)
+            {
+                query = query.Where(s => s.TotalPrice <= queryParams.MaxPrice.Value);
+            }
+
+            if (queryParams.Status.HasValue)
+            {
+                query = query.Where(s => s.Status == queryParams.Status.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
                 OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
@@ -270,8 +300,8 @@ public class SaleService : ISaleService
             var projectedQuery = query.ProjectTo<SaleResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse = await projectedQuery.ToPagedListAsync(
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+                queryParams.PageNumber,
+                queryParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }
@@ -313,13 +343,43 @@ public class SaleService : ISaleService
         }
     }
 
-    public async Task<Result<PagedList<SaleResponse>>> GetUserSalesAsync(string userId, PaginationParams paginationParams)
+    public async Task<Result<PagedList<SaleResponse>>> GetUserSalesAsync(string userId, SaleQueryParams queryParams)
     {
         try
         {
             var query = _saleRepository.GetAllSalesByUserIdQueryable(userId);
 
-            query = paginationParams.OrderBy switch
+            if (queryParams.CreatedAt.HasValue)
+            {
+                query = query.Where(s => s.CreatedAt == queryParams.CreatedAt.Value);
+            }
+
+            if (queryParams.UpdatedAt.HasValue)
+            {
+                query = query.Where(s => s.UpdatedAt == queryParams.UpdatedAt.Value);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.CustomerId))
+            {
+                query = query.Where(s => s.CustomerId == queryParams.CustomerId);
+            }
+
+            if (queryParams.MinPrice.HasValue)
+            {
+                query = query.Where(s => s.TotalPrice >= queryParams.MinPrice.Value);
+            }
+
+            if (queryParams.MaxPrice.HasValue)
+            {
+                query = query.Where(s => s.TotalPrice <= queryParams.MaxPrice.Value);
+            }
+
+            if (queryParams.Status.HasValue)
+            {
+                query = query.Where(s => s.Status == queryParams.Status.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.DateAsc => query.OrderBy(s => s.CreatedAt),
                 OrderByOptions.DateDesc => query.OrderByDescending(s => s.CreatedAt),
@@ -330,8 +390,8 @@ public class SaleService : ISaleService
             var projectedQuery = query.ProjectTo<SaleResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse = await projectedQuery.ToPagedListAsync(
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+                queryParams.PageNumber,
+                queryParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

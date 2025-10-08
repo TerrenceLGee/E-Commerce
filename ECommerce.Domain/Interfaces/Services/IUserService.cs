@@ -7,9 +7,9 @@ namespace ECommerce.Domain.Interfaces.Services;
 
 public interface IUserService
 {
-    Task<Result<PagedList<UserResponse>>> GetAllUsersAsync(PaginationParams paginationParams);
+    Task<Result<PagedList<UserResponse>>> GetAllUsersAsync(UserQueryParams queryParams);
     Task<Result<UserResponse>> GetUserByIdAsync(string userId);
 
     Task<Result<PagedList<AddressResponse>>>
-        GetUserAddressesByIdAsync(string userId, PaginationParams paginationParams);
+        GetUserAddressesByIdAsync(string userId, AddressQueryParams queryParams);
 }

@@ -21,7 +21,7 @@ public class AddressesController : ControllerBase
     
     [HttpGet]
     [Authorize]
-    public async Task<IActionResult> GetAllAddresses([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllAddresses([FromQuery] AddressQueryParams queryParams)
     {
         var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -30,7 +30,7 @@ public class AddressesController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _addressService.GetAllAddressesAsync(customerId, paginationParams);
+        var result = await _addressService.GetAllAddressesAsync(customerId, queryParams);
 
         if (result.IsFailed)
         {

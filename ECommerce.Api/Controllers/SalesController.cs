@@ -45,9 +45,9 @@ public class SalesController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetAllSales([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllSales([FromQuery] SaleQueryParams queryParams)
     {
-        var result = await _saleService.GetAllSalesAsync(paginationParams);
+        var result = await _saleService.GetAllSalesAsync(queryParams);
 
         if (result.IsFailed)
         {
@@ -79,7 +79,7 @@ public class SalesController : ControllerBase
 
     [HttpGet("me/sales")]
     [Authorize]
-    public async Task<IActionResult> GetSalesByUserId([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetSalesByUserId([FromQuery] SaleQueryParams queryParams)
     {
         var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -88,7 +88,7 @@ public class SalesController : ControllerBase
             return Unauthorized();
         }
 
-        var result = await _saleService.GetUserSalesAsync(customerId, paginationParams);
+        var result = await _saleService.GetUserSalesAsync(customerId, queryParams);
 
         if (result.IsFailed)
         {

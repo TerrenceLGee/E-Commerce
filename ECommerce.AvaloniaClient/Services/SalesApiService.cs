@@ -141,12 +141,12 @@ public class SalesApiService : ISalesApiService
         }
     }
 
-    public async Task<PagedList<SaleResponse>?> GetAllSalesAsync(PaginationParams paginationParams)
+    public async Task<PagedList<SaleResponse>?> GetAllSalesAsync(SaleQueryParams queryParams)
     {
         try
         {
             var queryString = 
-                $"api/sales?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+                $"api/sales?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)
@@ -165,12 +165,12 @@ public class SalesApiService : ISalesApiService
         }
     }
 
-    public async Task<PagedList<SaleResponse>?> GetAllSalesForUserAsync(PaginationParams paginationParams)
+    public async Task<PagedList<SaleResponse>?> GetAllSalesForUserAsync(SaleQueryParams queryParams)
     {
         try
         {
             var queryString = 
-                $"api/sales/me/sales?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+                $"api/sales/me/sales?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)

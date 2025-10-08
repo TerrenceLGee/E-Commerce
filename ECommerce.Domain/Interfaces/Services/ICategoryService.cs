@@ -11,5 +11,5 @@ public interface ICategoryService
     Task<Result<CategoryResponse>> UpdateCategoryAsync(int id, UpdateCategoryRequest request);
     Task<Result<CategoryResponse>> DeleteCategoryAsync(int id);
     Task<Result<CategoryResponse>> GetCategoryByIdAsync(int id);
-    Task<Result<PagedList<CategoryResponse>>> GetAllCategoriesAsync(PaginationParams paginationParams);
+    Task<Result<PagedList<CategoryResponse>>> GetAllCategoriesAsync(CategoryQueryParams queryParams);
 }

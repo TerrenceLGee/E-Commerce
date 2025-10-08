@@ -150,18 +150,38 @@ public class ProductService : IProductService
         }
     }
 
-    public async Task<Result<PagedList<ProductResponse>>> GetAllProductsAsync(PaginationParams paginationParams)
+    public async Task<Result<PagedList<ProductResponse>>> GetAllProductsAsync(ProductQueryParams queryParams)
     {
         try
         {
             var query = _productRepository.GetAllQueryable();
 
-            if (!string.IsNullOrEmpty(paginationParams.Filter))
+            if (!string.IsNullOrEmpty(queryParams.Name))
             {
-                query = query.Where(p => p.Category.Name.ToLower() == paginationParams.Filter.ToLower());
+                query = query.Where(p => p.Name.ToLower().Contains(queryParams.Name.ToLower()));
             }
 
-            query = paginationParams.OrderBy switch
+            if (!string.IsNullOrEmpty(queryParams.CategoryName))
+            {
+                query = query.Where(p => p.Category.Name.ToLower().Contains(queryParams.CategoryName.ToLower()));
+            }
+
+            if (queryParams.IsActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == queryParams.IsActive.Value);
+            }
+
+            if (queryParams.MinPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= queryParams.MinPrice.Value);
+            }
+
+            if (queryParams.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= queryParams.MaxPrice.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.NameAsc => query.OrderBy(p => p.Name),
                 OrderByOptions.NameDesc => query.OrderByDescending(p => p.Name),
@@ -174,20 +194,77 @@ public class ProductService : IProductService
             var projectedQuery = query.ProjectTo<ProductResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse = await projectedQuery.ToPagedListAsync(
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+                queryParams.PageNumber,
+                queryParams.PageSize);
             
             return Result.Ok(pagedResponse);
         }
         catch (ArgumentNullException ex)
         {
             _logger.LogError("There was an error retrieving all products: {errorMessage}", ex.Message);
-            return Result.Fail($"There was an error all products: {ex.Message}");
+            return Result.Fail($"There was an error retrieving all products: {ex.Message}");
         }
         catch (Exception ex)
         {
             _logger.LogError("There was an unexpected error: {errorMessage}", ex.Message);
             return Result.Fail($"There was an unexpected error: {ex.Message}");
+        }
+    }
+
+    public async Task<Result<PagedList<ProductResponse>>> GetAllProductsByCategoryIdAsync(int categoryId, ProductQueryParams queryParams)
+    {
+        try
+        {
+            var query = _productRepository.GetAllByCategoryIdQueryable(categoryId);
+
+            if (!string.IsNullOrEmpty(queryParams.Name))
+            {
+                query = query.Where(p => p.Name.ToLower().Contains(queryParams.Name.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.CategoryName))
+            {
+                query = query.Where(p => p.Category.Name.ToLower().Contains(queryParams.CategoryName.ToLower()));
+            }
+
+            if (queryParams.IsActive.HasValue)
+            {
+                query = query.Where(p => p.IsActive == queryParams.IsActive.Value);
+            }
+
+            if (queryParams.MinPrice.HasValue)
+            {
+                query = query.Where(p => p.Price >= queryParams.MinPrice.Value);
+            }
+
+            if (queryParams.MaxPrice.HasValue)
+            {
+                query = query.Where(p => p.Price <= queryParams.MaxPrice.Value);
+            }
+
+            query = queryParams.OrderBy switch
+            {
+                OrderByOptions.NameAsc => query.OrderBy(p => p.Name),
+                OrderByOptions.NameDesc => query.OrderByDescending(p => p.Name),
+                OrderByOptions.PriceAsc => query.OrderBy(p => p.Price),
+                OrderByOptions.PriceDesc => query.OrderByDescending(p => p.Price),
+                OrderByOptions.IdDesc => query.OrderByDescending(p => p.Id),
+                _ => query.OrderBy(p => p.Id)
+            };
+
+            var projectedQuery = query.ProjectTo<ProductResponse>(_mapper.ConfigurationProvider);
+
+            var pagedResponse = await projectedQuery.ToPagedListAsync(
+                queryParams.PageNumber,
+                queryParams.PageSize);
+
+            return Result.Ok(pagedResponse);
+        }
+        catch (ArgumentNullException ex)
+        {
+            _logger.LogError("There was an error retrieving all products for Category with Id {id}: {errorMessage}",
+                categoryId, ex.Message);
+            return Result.Fail($"There was an error retrieving all products with Id {categoryId}: {ex.Message}");
         }
     }
 }

@@ -11,6 +11,6 @@ public interface IAddressApiService
     Task<AddressResponse?> AddAddressAsync(CreateAddressRequest request);
     Task<AddressResponse?> UpdateAddressAsync(int addressId, UpdateAddressRequest request);
     Task<AddressResponse?> DeleteAddressAsync(int addressId);
-    Task<PagedList<AddressResponse>?> GetAllAddressesAsync(PaginationParams paginationParams);
+    Task<PagedList<AddressResponse>?> GetAllAddressesAsync(AddressQueryParams queryParams);
     Task<AddressResponse?> GetAddressByIdAsync(int addressId);
 }

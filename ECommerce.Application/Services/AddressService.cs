@@ -107,13 +107,48 @@ public class AddressService : IAddressService
         }
     }
 
-    public async Task<Result<PagedList<AddressResponse>>> GetAllAddressesAsync(string customerId, PaginationParams paginationParams)
+    public async Task<Result<PagedList<AddressResponse>>> GetAllAddressesAsync(string customerId, AddressQueryParams queryParams)
     {
         try
         {
             var query = _addressRepository.GetAllQueryable(customerId);
 
-            query = paginationParams.OrderBy switch
+            if (!string.IsNullOrEmpty(queryParams.StreetNumber))
+            {
+                query = query.Where(a => a.StreetNumber == queryParams.StreetNumber);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.StreetName))
+            {
+                query = query.Where(a => a.StreetName.ToLower().Contains(queryParams.StreetName.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.City))
+            {
+                query = query.Where(a => a.City.ToLower().Contains(queryParams.City.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.State))
+            {
+                query = query.Where(a => a.State.ToLower().Contains(queryParams.State.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.ZipCode))
+            {
+                query = query.Where(a => a.ZipCode == queryParams.ZipCode);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.Country))
+            {
+                query = query.Where(a => a.Country.ToLower().Contains(queryParams.Country.ToLower()));
+            }
+
+            if (queryParams.AddressType.HasValue)
+            {
+                query = query.Where(a => a.AddressType == queryParams.AddressType.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.CustomerIdDesc => query.OrderByDescending(a => a.CustomerId),
                 _ => query.OrderBy(a => a.CustomerId)
@@ -122,8 +157,8 @@ public class AddressService : IAddressService
             var projectedQuery = query.ProjectTo<AddressResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse = await projectedQuery.ToPagedListAsync(
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+                queryParams.PageNumber,
+                queryParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

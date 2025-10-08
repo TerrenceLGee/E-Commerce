@@ -96,17 +96,41 @@ public class ProductsApiService : IProductsApiService
         }
     }
 
-    public async Task<PagedList<ProductResponse>?> GetProductsAsync(PaginationParams paginationParams)
+    public async Task<PagedList<ProductResponse>?> GetProductsAsync(ProductQueryParams queryParams)
     {
         try
         {
             var queryString = 
-                $"api/products?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+                $"api/products?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogError("Error retieving products. Status: {statusCode}, Reason: {reason}",
+                    response.StatusCode, response.ReasonPhrase);
+                return null;
+            }
+
+            return await response.Content.ReadFromJsonAsync<PagedList<ProductResponse>>(_options);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An unexpected error occurred while retrieving the products");
+            return null;
+        }
+    }
+
+    public async Task<PagedList<ProductResponse>?> GetProductsByCategoryId(int categoryId, ProductQueryParams queryParams)
+    {
+        try
+        {
+            var queryString =
+                $"api/products/categories/{categoryId}?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
+            var response = await _httpClient.GetAsync(queryString);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                _logger.LogError("Error retrieving products. Status: {statusCode}, Reason: {reason}",
                     response.StatusCode, response.ReasonPhrase);
                 return null;
             }

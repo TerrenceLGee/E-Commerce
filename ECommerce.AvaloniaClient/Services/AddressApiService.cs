@@ -96,12 +96,12 @@ public class AddressApiService : IAddressApiService
         }
     }
 
-    public async Task<PagedList<AddressResponse>?> GetAllAddressesAsync(PaginationParams paginationParams)
+    public async Task<PagedList<AddressResponse>?> GetAllAddressesAsync(AddressQueryParams queryParams)
     {
         try
         {
             var queryString = 
-                $"api/addresses?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+                $"api/addresses?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)

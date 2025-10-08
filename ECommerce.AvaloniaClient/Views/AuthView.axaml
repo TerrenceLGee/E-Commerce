@@ -3,6 +3,104 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="ECommerce.AvaloniaClient.Views.AuthView">
-    Welcome to Avalonia!
+             x:Class="ECommerce.AvaloniaClient.Views.AuthView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:AuthViewModel">
+    <UserControl.Styles>
+        <Style Selector="TextBlock.Error">
+            <Setter Property="Foreground" Value="Red"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+    </UserControl.Styles>
+    
+    <Border Padding="20" CornerRadius="5" Background="#2d2d2d">
+        <TabControl>
+            <TabItem Header="Login">
+                <StackPanel Spacing="10" Margin="10">
+                    <TextBlock Text="Email Address"/>
+                    <TextBox Text="{Binding LoginEmail, Mode=TwoWay}"/>
+                    <TextBlock Classes="Error" Text="{Binding LoginEmailErrors}"/>
+                    
+                    <TextBlock Text="Password"/>
+                    <TextBox Text="{Binding LoginPassword, Mode=TwoWay}" PasswordChar="*"/>
+                    <TextBlock Classes="Error" Text="{Binding LoginPasswordErrors}"/>
+                    
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Spacing="10"
+                                Margin="0,10,0,0">
+                        <Button Content="Login" Command="{Binding LoginCommand}"/>
+                        <Button Content="Exit" Command="{Binding ExitCommand}"/>
+                    </StackPanel>
+                    <TextBlock Text="{Binding ErrorMessage}" Classes="Error" IsVisible="{Binding !!ErrorMessage}" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </TabItem>
+            
+            <TabItem Header="Register">
+                <ScrollViewer>
+                    <StackPanel Spacing="5" Margin="10">
+                        <TextBlock Text="First Name"/>
+                        <TextBox Text="{Binding FirstName, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding FirstNameErrors}"/>
+                        
+                        <TextBlock Text="Last Name"/>
+                        <TextBox Text="{Binding LastName, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding LastNameErrors}"/>
+                        
+                        <TextBlock Text="Date of Birth"/>
+                        <DatePicker SelectedDate="{Binding SelectedBirthDate, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding SelectedBirthDateErrors}"/>
+                        
+                        <TextBlock Text="Email Address"/>
+                        <TextBox Text="{Binding EmailAddress, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding EmailAddressErrors}"/>
+                        
+                        <TextBlock Text="Password"/>
+                        <TextBox Text="{Binding Password, Mode=TwoWay}"
+                                 PasswordChar="*"/>
+                        <TextBlock Classes="Error" Text="{Binding PasswordErrors}"/>
+                        
+                        <TextBlock Text="Confirm Password"/>
+                        <TextBox Text="{Binding ConfirmPassword, Mode=TwoWay}"
+                                 PasswordChar="*"/>
+                        <TextBlock Classes="Error" Text="{Binding ConfirmPasswordErrors}"/>
+                        
+                        <TextBlock Text="Street Number"/>
+                        <TextBox Text="{Binding StreetNumber, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StreetNumberErrors}"/>
+                        
+                        <TextBlock Text="Street Name"/>
+                        <TextBox Text="{Binding StreetName, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StreetNameErrors}"/>
+                        
+                        <TextBlock Text="City"/>
+                        <TextBox Text="{Binding City, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding CityErrors}"/>
+                        
+                        <TextBlock Text="State"/>
+                        <TextBox Text="{Binding State, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StateErrors}"/>
+                        
+                        <TextBlock Text="Zip Code"/>
+                        <TextBox Text="{Binding ZipCode, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding ZipCodeErrors}"/>
+                        
+                        <TextBlock Text="Country"/>
+                        <TextBox Text="{Binding Country, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding CountryErrors}"/>
+                        
+                        <TextBlock Text="Address Type"/>
+                        <ComboBox ItemsSource="{Binding AddressTypes}"
+                                  SelectedItem="{Binding SelectedType, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding SelectedTypeErrors}"/>
+                        
+                        <Button Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Center" Margin="0,10,0,0"/>
+                        <TextBlock Text="{Binding SuccessMessage}" Foreground="LightGreen" IsVisible="{Binding !!SuccessMessage}" HorizontalAlignment="Center"/>
+                        <TextBlock Text="{Binding ErrorMessage}" Classes="Error" IsVisible="{Binding !!ErrorMessage}" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Border>
 </UserControl>

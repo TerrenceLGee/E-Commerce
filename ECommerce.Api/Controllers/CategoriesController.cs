@@ -21,9 +21,9 @@ public class CategoriesController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllCategories([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllCategories([FromQuery] CategoryQueryParams queryParams)
     {
-        var result = await _categoryService.GetAllCategoriesAsync(paginationParams);
+        var result = await _categoryService.GetAllCategoriesAsync(queryParams);
 
         if (result.IsFailed)
         {

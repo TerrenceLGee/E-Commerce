@@ -34,13 +34,38 @@ public class UserService : IUserService
         _mapper = mapper;
     }
     
-    public async Task<Result<PagedList<UserResponse>>> GetAllUsersAsync(PaginationParams paginationParams)
+    public async Task<Result<PagedList<UserResponse>>> GetAllUsersAsync(UserQueryParams queryParams)
     {
         try
         {
             var query = _userManager.Users.AsQueryable();
 
-            query = paginationParams.OrderBy switch
+            if (!string.IsNullOrEmpty(queryParams.UserId))
+            {
+                query = query.Where(u => u.Id == queryParams.UserId);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.FirstName))
+            {
+                query = query.Where(u => u.FirstName.ToLower() == queryParams.FirstName.ToLower());
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.LastName))
+            {
+                query = query.Where(u => u.LastName.ToLower() == queryParams.LastName.ToLower());
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.EmailAddress))
+            {
+                query = query.Where(u => u.Email!.ToLower() == queryParams.EmailAddress.ToLower());
+            }
+
+            if (queryParams.BirthDate.HasValue)
+            {
+                query = query.Where(u => u.DateOfBirth == queryParams.BirthDate.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.BirthDateAsc => query.OrderBy(u => u.DateOfBirth),
                 OrderByOptions.BirthDateDesc => query.OrderByDescending(u => u.DateOfBirth),
@@ -55,7 +80,7 @@ public class UserService : IUserService
             var projectedQuery = query.ProjectTo<UserResponse>(_mapper.ConfigurationProvider);
 
             var pagedUsers =
-                await projectedQuery.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
+                await projectedQuery.ToPagedListAsync(queryParams.PageNumber, queryParams.PageSize);
 
             return Result.Ok(pagedUsers);
         }
@@ -104,7 +129,7 @@ public class UserService : IUserService
         }
     }
 
-    public async Task<Result<PagedList<AddressResponse>>> GetUserAddressesByIdAsync(string userId, PaginationParams paginationParams)
+    public async Task<Result<PagedList<AddressResponse>>> GetUserAddressesByIdAsync(string userId, AddressQueryParams queryParams)
     {
         try
         {
@@ -119,7 +144,42 @@ public class UserService : IUserService
 
             var query = _addressRepository.GetAllQueryable(userId);
 
-            query = paginationParams.OrderBy switch
+            if (!string.IsNullOrEmpty(queryParams.StreetNumber))
+            {
+                query = query.Where(a => a.StreetNumber == queryParams.StreetNumber);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.StreetName))
+            {
+                query = query.Where(a => a.StreetName.ToLower().Contains(queryParams.StreetName.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.City))
+            {
+                query = query.Where(a => a.City.ToLower().Contains(queryParams.City.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.State))
+            {
+                query = query.Where(a => a.State.ToLower().Contains(queryParams.State.ToLower()));
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.ZipCode))
+            {
+                query = query.Where(a => a.ZipCode == queryParams.ZipCode);
+            }
+
+            if (!string.IsNullOrEmpty(queryParams.Country))
+            {
+                query = query.Where(a => a.Country.ToLower().Contains(queryParams.Country.ToLower()));
+            }
+
+            if (queryParams.AddressType.HasValue)
+            {
+                query = query.Where(a => a.AddressType == queryParams.AddressType.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.CustomerIdDesc => query.OrderBy(a => a.CustomerId),
                 _ => query.OrderBy(a => a.CustomerId)
@@ -128,7 +188,7 @@ public class UserService : IUserService
             var projectedQuery = query.ProjectTo<AddressResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse =
-                await projectedQuery.ToPagedListAsync(paginationParams.PageNumber, paginationParams.PageSize);
+                await projectedQuery.ToPagedListAsync(queryParams.PageNumber, queryParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

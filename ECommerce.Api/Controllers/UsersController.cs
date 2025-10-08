@@ -19,9 +19,9 @@ public class UsersController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetAllUsers([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllUsers([FromQuery] UserQueryParams queryParams)
     {
-        var result = await _userService.GetAllUsersAsync(paginationParams);
+        var result = await _userService.GetAllUsersAsync(queryParams);
 
         if (result.IsFailed)
         {
@@ -54,9 +54,9 @@ public class UsersController : ControllerBase
     [HttpGet("{userId}/addresses")]
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAddressesByUserId([FromRoute] string userId,
-        [FromQuery] PaginationParams paginationParams)
+        [FromQuery] AddressQueryParams queryParams)
     {
-        var result = await _userService.GetUserAddressesByIdAsync(userId, paginationParams);
+        var result = await _userService.GetUserAddressesByIdAsync(userId, queryParams);
 
         if (result.IsFailed)
         {

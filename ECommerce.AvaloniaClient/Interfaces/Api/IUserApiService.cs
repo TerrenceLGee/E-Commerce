@@ -7,7 +7,7 @@ namespace ECommerce.AvaloniaClient.Interfaces.Api;
 
 public interface IUserApiService
 {
-    Task<PagedList<UserResponse>?> GetAllUsersAsync(PaginationParams paginationParams);
+    Task<PagedList<UserResponse>?> GetAllUsersAsync(UserQueryParams queryParams);
     Task<UserResponse?> GetUserByIdAsync(string userId);
-    Task<PagedList<AddressResponse>?> GetUserAddressesByIdAsync(string userId, PaginationParams paginationParams);
+    Task<PagedList<AddressResponse>?> GetUserAddressesByIdAsync(string userId, AddressQueryParams queryParams);
 }

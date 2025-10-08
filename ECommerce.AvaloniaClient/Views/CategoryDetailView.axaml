@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.CategoryDetailView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:CategoryDetailViewModel">
+    <Grid RowDefinitions="Auto, *" Margin="10">
+        <StackPanel Grid.Row="0">
+            <Button Content="Back To All Categories"
+                    Command="{Binding GoBackCommand}"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,15"/>
+            <TextBlock Text="Category Details" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
+            <Border Padding="15" CornerRadius="5" Background="#3a3a3a">
+                <StackPanel Spacing="10">
+                    <WrapPanel>
+                        <TextBlock Text="Name: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedCategory.Name, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Description: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedCategory.Description, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Is Active Category?: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedCategory.IsActive, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        
+        <DockPanel Grid.Row="1" Margin="0,20,0,0">
+            
+        </DockPanel>
+    </Grid>
+</UserControl>

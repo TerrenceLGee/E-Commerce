@@ -22,9 +22,27 @@ public class ProductsController : ControllerBase
 
     [HttpGet]
     [AllowAnonymous]
-    public async Task<IActionResult> GetAllProducts([FromQuery] PaginationParams paginationParams)
+    public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParams queryParams)
     {
-        var result = await _productService.GetAllProductsAsync(paginationParams);
+        var result = await _productService.GetAllProductsAsync(queryParams);
+
+        if (result.IsFailed)
+        {
+            var errorMessage = result.Errors.FirstOrDefault()?.Message;
+            return errorMessage!.Contains("not found")
+                ? NotFound(errorMessage)
+                : BadRequest(errorMessage);
+        }
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("/categories/{categoryId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetProductsByCategoryId([FromRoute] int categoryId,
+        [FromQuery] ProductQueryParams queryParams)
+    {
+        var result = await _productService.GetAllProductsByCategoryIdAsync(categoryId, queryParams);
 
         if (result.IsFailed)
         {

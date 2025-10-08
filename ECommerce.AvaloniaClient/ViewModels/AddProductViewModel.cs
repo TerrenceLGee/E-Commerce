@@ -30,6 +30,11 @@ public partial class AddProductViewModel : ObservableValidator
         _categoriesApiService = categoriesApiService;
     }
 
+    [ObservableProperty] private bool _isLoading;
+    [ObservableProperty] private string? _name;
+    [ObservableProperty] private bool _isCategoryActive;
+
+    
     [ObservableProperty]
     [Required(ErrorMessage = "Product name is required")]
     [MaxLength(200, ErrorMessage = "Product name can not be greater than 200 characters")]

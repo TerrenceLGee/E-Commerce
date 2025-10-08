@@ -94,12 +94,12 @@ public class CategoriesApiService : ICategoriesApiService
         }
     }
 
-    public async Task<PagedList<CategoryResponse>?> GetCategoriesAsync(PaginationParams paginationParams)
+    public async Task<PagedList<CategoryResponse>?> GetCategoriesAsync(CategoryQueryParams queryParams)
     {
         try
         {
             var queryString = 
-                $"api/categories?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+                $"api/categories?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)

@@ -134,19 +134,24 @@ public class CategoryService : ICategoryService
         }
     }
 
-    public async Task<Result<PagedList<CategoryResponse>>> GetAllCategoriesAsync(PaginationParams paginationParams)
+    public async Task<Result<PagedList<CategoryResponse>>> GetAllCategoriesAsync(CategoryQueryParams queryParams)
     {
         try
         {
             var query = _categoryRepository.GetAllQueryable();
-                
 
-            if (!string.IsNullOrEmpty(paginationParams.Filter))
+
+            if (!string.IsNullOrEmpty(queryParams.Name))
             {
-                query = query.Where(c => c.Name.ToLower() == paginationParams.Filter.ToLower());
+                query = query.Where(c => c.Name.ToLower().Contains(queryParams.Name.ToLower()));
             }
 
-            query = paginationParams.OrderBy switch
+            if (queryParams.IsActive.HasValue)
+            {
+                query = query.Where(c => c.IsActive == queryParams.IsActive.Value);
+            }
+
+            query = queryParams.OrderBy switch
             {
                 OrderByOptions.NameAsc => query.OrderBy(c => c.Name),
                 OrderByOptions.NameDesc => query.OrderByDescending(c => c.Name),
@@ -157,8 +162,8 @@ public class CategoryService : ICategoryService
             var projectedQuery = query.ProjectTo<CategoryResponse>(_mapper.ConfigurationProvider);
 
             var pagedResponse = await projectedQuery.ToPagedListAsync(
-                paginationParams.PageNumber,
-                paginationParams.PageSize);
+                queryParams.PageNumber,
+                queryParams.PageSize);
 
             return Result.Ok(pagedResponse);
         }

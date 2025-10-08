@@ -26,11 +26,11 @@ public class UserApiService : IUserApiService
         _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
     }
     
-    public async Task<PagedList<UserResponse>?> GetAllUsersAsync(PaginationParams paginationParams)
+    public async Task<PagedList<UserResponse>?> GetAllUsersAsync(UserQueryParams queryParams)
     {
         try
         {
-            var queryString = $"api/users?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+            var queryString = $"api/users?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)
@@ -72,11 +72,11 @@ public class UserApiService : IUserApiService
         }
     }
 
-    public async Task<PagedList<AddressResponse>?> GetUserAddressesByIdAsync(string userId, PaginationParams paginationParams)
+    public async Task<PagedList<AddressResponse>?> GetUserAddressesByIdAsync(string userId, AddressQueryParams queryParams)
     {
         try
         {
-            var queryString = $"api/users/{userId}/addresses?pageNumber={paginationParams.PageNumber}&pageSize={paginationParams.PageSize}";
+            var queryString = $"api/users/{userId}/addresses?pageNumber={queryParams.PageNumber}&pageSize={queryParams.PageSize}";
             var response = await _httpClient.GetAsync(queryString);
 
             if (!response.IsSuccessStatusCode)
