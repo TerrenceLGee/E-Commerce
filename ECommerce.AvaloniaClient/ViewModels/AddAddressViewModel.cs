@@ -26,6 +26,7 @@ public partial class AddAddressViewModel : ObservableValidator
 
     [ObservableProperty]
     [Required(ErrorMessage = "Street number is required")]
+    [MaxLength(15, ErrorMessage = "Street number must be no more than 15 characters")]
     [NotifyPropertyChangedFor(nameof(StreetNumberErrors))]
     private string _streetNumber = string.Empty;
     public string? StreetNumberErrors => GetErrors(nameof(StreetNumber))
@@ -34,6 +35,7 @@ public partial class AddAddressViewModel : ObservableValidator
 
     [ObservableProperty]
     [Required(ErrorMessage = "Street name is required")]
+    [MaxLength(30, ErrorMessage = "Street name must be no more than 30 characters")]
     [NotifyPropertyChangedFor(nameof(StreetNameErrors))]
     private string _streetName = string.Empty;
     public string? StreetNameErrors => GetErrors(nameof(StreetName))
@@ -42,6 +44,7 @@ public partial class AddAddressViewModel : ObservableValidator
 
     [ObservableProperty] 
     [Required(ErrorMessage = "City is required")] 
+    [MaxLength(20, ErrorMessage = "City name can be no longer than 20 characters")]
     [NotifyPropertyChangedFor(nameof(CityErrors))]
     private string _city = string.Empty;
 
@@ -51,6 +54,7 @@ public partial class AddAddressViewModel : ObservableValidator
 
     [ObservableProperty] 
     [Required(ErrorMessage = "State is required")] 
+    [MaxLength(20, ErrorMessage = "State name can be no longer than 20 characters")]
     [NotifyPropertyChangedFor(nameof(StateErrors))]
     private string _state = string.Empty;
 
@@ -69,6 +73,7 @@ public partial class AddAddressViewModel : ObservableValidator
 
     [ObservableProperty]
     [Required(ErrorMessage = "Country is required")]
+    [MaxLength(25, ErrorMessage = "Country name can be no longer than 25 characters")]
     [NotifyPropertyChangedFor(nameof(CountryErrors))]
     private string _country = string.Empty;
 

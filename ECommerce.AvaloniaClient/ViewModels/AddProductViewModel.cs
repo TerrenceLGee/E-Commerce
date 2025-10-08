@@ -31,9 +31,6 @@ public partial class AddProductViewModel : ObservableValidator
     }
 
     [ObservableProperty] private bool _isLoading;
-    [ObservableProperty] private string? _name;
-    [ObservableProperty] private bool _isCategoryActive;
-
     
     [ObservableProperty]
     [Required(ErrorMessage = "Product name is required")]
@@ -113,7 +110,7 @@ public partial class AddProductViewModel : ObservableValidator
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        var categories = await _categoriesApiService.GetCategoriesAsync(new PaginationParams());
+        var categories = await _categoriesApiService.GetCategoriesAsync(new CategoryQueryParams());
 
         if (categories is not null)
         {

@@ -38,8 +38,13 @@ public partial class CancelSaleViewModel : ObservableObject
     {
         IsLoading = true;
 
-        var paginationParams = new PaginationParams { PageNumber = CurrentPage, PageSize = PageSize };
-        var pagedResult = await _salesApiService.GetAllSalesAsync(paginationParams);
+        var queryParams = new SaleQueryParams
+        {
+            PageNumber = CurrentPage,
+            PageSize = PageSize
+        };
+        
+        var pagedResult = await _salesApiService.GetAllSalesAsync(queryParams);
 
         if (pagedResult is not null)
         {

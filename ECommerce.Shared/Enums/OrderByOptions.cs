@@ -2,6 +2,7 @@ namespace ECommerce.Shared.Enums;
 
 public enum OrderByOptions
 {
+    DefaultOrder,
     BirthDateAsc,
     BirthDateDesc,
     FirstNameAsc,

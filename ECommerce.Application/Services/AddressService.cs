@@ -19,6 +19,7 @@ public class AddressService : IAddressService
     private readonly IAddressRepository _addressRepository;
     private readonly ILogger<AddressService> _logger;
     private readonly IMapper _mapper;
+   
 
     public AddressService(
         IAddressRepository addressRepository,
@@ -150,6 +151,8 @@ public class AddressService : IAddressService
 
             query = queryParams.OrderBy switch
             {
+                OrderByOptions.IdAsc => query.OrderBy(a => a.Id),
+                OrderByOptions.IdDesc => query.OrderByDescending(a => a.Id),
                 OrderByOptions.CustomerIdDesc => query.OrderByDescending(a => a.CustomerId),
                 _ => query.OrderBy(a => a.CustomerId)
             };
