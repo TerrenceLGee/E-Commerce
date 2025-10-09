@@ -15,11 +15,17 @@
     </UserControl.Styles>
     <Grid>
         <Grid IsVisible="{Binding !IsInConfirmationMode}"
-              ColumnDefinitions="*, Auto, 1.5*" RowDefinitions="Auto, *" Margin="10">
+              ColumnDefinitions="1.2*, *, *" RowDefinitions="Auto, *" Margin="10">
             <TextBlock Grid.Row="0" Grid.ColumnSpan="3" Text="Shop" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
-            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, *, Auto, Auto">
+            <Grid Grid.Row="1" Grid.Column="0" RowDefinitions="Auto, *, Auto, Auto" Margin="0,0,10,0">
                 <TextBlock Grid.Row="0" Text="Available Products" FontWeight="Bold" Margin="0,0,0,5"/>
-                <DataGrid Grid.Row="1" ItemsSource="{Binding AvailableProducts}" SelectedItem="{Binding SelectedProduct}" IsReadOnly="True">
+                <DataGrid Grid.Row="1"
+                          ItemsSource="{Binding AvailableProducts}"
+                          SelectedItem="{Binding SelectedProduct}"
+                          IsReadOnly="True"
+                          GridLinesVisibility="All"
+                          BorderThickness="1"
+                          BorderBrush="Gray">
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
                         <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
@@ -29,44 +35,101 @@
                     </DataGrid.Columns>
                 </DataGrid>
                 <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,5">
-                    <Button Content="&lt; Previous"
-                            Command="{Binding GoToPreviousProductPageCommand}"
+                    <Button Content="&lt;" Command="{Binding GoToPreviousProductPageCommand}"
                             IsEnabled="{Binding CanGoToPreviousProductPage}"/>
-                    <TextBlock Text="{Binding CurrentProductPage, StringFormat='{}Page {0}'}" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding TotalProductPages, StringFormat='{}of {0}'}" VerticalAlignment="Center"/>
-                    <Button Content="Next &gt;"
-                            Command="{Binding GoToNextProductPageCommand}" IsEnabled="{Binding CanGoToNextProductPage}"/>
+                    <TextBlock VerticalAlignment="Center">
+                        <Run Text="Page"/>
+                        <Run Text="{Binding CurrentProductPage}"/>
+                        <Run Text="/"/>
+                        <Run Text="{Binding TotalProductPages}"/>
+                    </TextBlock>
+                    <Button Content="&gt;" Command="{Binding GoToNextProductPageCommand}" IsEnabled="{Binding CanGoToNextProductPage}"/>
                 </StackPanel>
-                <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0">
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Spacing="10" Margin="0,10,0,0" HorizontalAlignment="Right">
                     <TextBlock Text="Quantity: " VerticalAlignment="Center"/>
                     <NumericUpDown Value="{Binding QuantityToAdd}" Minimum="1" Width="80"/>
                     <Button Content="Add To Cart" Command="{Binding AddToCartCommand}"/>
                 </StackPanel>
             </Grid>
-            <Rectangle Grid.Row="1" Grid.Column="1" Fill="Gray" Width="1" Margin="10,0"/>
-            <Grid Grid.Row="1" Grid.Column="2" RowDefinitions="Auto, *">
-                <Grid Grid.Row="0" RowDefinitions="Auto, Auto, *, Auto">
-                    <TextBlock Grid.Row="0" Text="Shipping Address" FontWeight="Bold"/>
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding SavedAddresses}"
-                              SelectedItem="{Binding SelectedSavedAddress}"
+            <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto, *" Margin="10,0">
+                <TextBlock Grid.Row="0" Text="Select shipping address or enter it below" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ScrollViewer Grid.Row="1">
+                    <StackPanel Spacing="5">
+                        <ComboBox ItemsSource="{Binding SavedAddresses}"
+                                  SelectedItem="{Binding SelectedSavedAddress}"
+                                  DisplayMemberBinding="{Binding AddressType}"
+                                  PlaceholderText="-- Select a saved address --"/>
+                        <TextBlock Text="Street Number"/>
+                        <TextBox Text="{Binding StreetNumber, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StreetNumberErrors}"/>
+                        
+                        <TextBlock Text="Street Name"/>
+                        <TextBox Text="{Binding StreetName, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StreetNameErrors}"/>
+                        
+                        <TextBlock Text="City"/>
+                        <TextBox Text="{Binding City, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding CityErrors}"/>
+                        
+                        <TextBlock Text="State"/>
+                        <TextBox Text="{Binding State, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding StateErrors}"/>
+                        
+                        <TextBlock Text="Zip Code"/>
+                        <TextBox Text="{Binding ZipCode, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding ZipCodeErrors}"/>
+                        
+                        <TextBlock Text="Country"/>
+                        <TextBox Text="{Binding Country, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding CountryErrors}"/>
+                        
+                        <TextBlock Text="Address Type"/>
+                        <ComboBox ItemsSource="{Binding AddressTypes}"
+                                  SelectedItem="{Binding SelectedAddressType, Mode=TwoWay}"/>
+                        
+                        <TextBlock Text="Notes"/>
+                        <TextBox Text="{Binding Notes, Mode=TwoWay}"/>
+                        <TextBlock Classes="Error" Text="{Binding NotesErrors}"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+            <Grid Grid.Row="1" Grid.Column="2" RowDefinitions="Auto, *" Margin="10,0,0,0">
+                <TextBlock Grid.Row="0" Text="Place Order" FontWeight="Bold" Margin="0,0,0,5"/>
+                <DockPanel Grid.Row="1">
+                    <Button DockPanel.Dock="Bottom" Content="Place Order" Command="{Binding PlaceOrderCommand}" HorizontalAlignment="Stretch" Margin="0,10,0,0"/>
+                    <DataGrid ItemsSource="{Binding ShoppingCart}"
                               IsReadOnly="True"
-                              MaxHeight="150">
+                              GridLinesVisibility="All"
+                              BorderThickness="1"
+                              BorderBrush="Gray">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Type" Binding="{Binding AddressType}"/>
-                            <DataGridTextColumn Header="Address" Binding="{Binding FullAddress}"/>
+                            <DataGridTextColumn Header="Product Id" Binding="{Binding ProductId}" Width="50"/>
+                            <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                            <DataGridTextColumn Header="Unit Price" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="*"/>
+                            <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                </Grid>
+                </DockPanel>
             </Grid>
         </Grid>
         <Border IsVisible="{Binding IsInConfirmationMode}" Padding="20">
             <StackPanel Spacing="15" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="Sale completed successfully!" FontSize="22" FontWeight="Bold" Foreground="LightGreen" HorizontalAlignment="Center"/>
-                <TextBlock Text="{Binding AddedSale.CustomerId, FallbackValue='Unable to display customer Id'}"/>
-                <TextBlock Text="{Binding AddedSale.TotalPrice, StringFormat={}{0:C},FallbackValue='Unable to display total sale price'}"/>
-                <TextBlock Text="{Binding AddedSale.Status, FallbackValue='Unable to display sale status'}"/>
-                <TextBlock Text="{Binding AddedSale.CreatedAt, FallbackValue='Unable to display sale creation date'}"/>
+                <WrapPanel>
+                    <TextBlock Text="Customer Id: " FontWeight="Bold"/>
+                    <TextBlock Text="{Binding AddedSale.CustomerId, FallbackValue='N/A'}"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="Sale date: " FontWeight="Bold"/>
+                    <TextBlock Text="{Binding AddedSale.CreatedAt, FallbackValue='N/A'}"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="Status: " FontWeight="Bold"/>
+                    <TextBlock Text="{Binding AddedSale.Status, FallbackValue='N/A'}"/>
+                </WrapPanel>
+                <WrapPanel>
+                    <TextBlock Text="Total Price: " FontWeight="Bold"/>
+                    <TextBlock Text="{Binding AddedSale.TotalPrice, FallbackValue='N/A', StringFormat={}{0:C}}"/>
+                </WrapPanel>
             </StackPanel>
         </Border>
     </Grid>
