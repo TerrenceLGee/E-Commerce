@@ -130,6 +130,7 @@
                     <TextBlock Text="Total Price: " FontWeight="Bold"/>
                     <TextBlock Text="{Binding AddedSale.TotalPrice, FallbackValue='N/A', StringFormat={}{0:C}}"/>
                 </WrapPanel>
+                <Button Content="Go Back" Command="{Binding CreateAnotherSaleCommand}" Margin="0,15,0,0"/>
             </StackPanel>
         </Border>
     </Grid>

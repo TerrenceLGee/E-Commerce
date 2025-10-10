@@ -73,7 +73,8 @@
                 <TextBlock Text="{Binding AddedProduct.StockQuantity, FallbackValue='Unable to display Quantity'}"/>
                 <TextBlock Text="{Binding AddedProduct.IsActive, FallbackValue='Unable to display active status'}"/>
                 <TextBlock Text="{Binding AddedProduct.Category.Name, FallbackValue='Unable to display Category'}"/>
-                <Button Content="Add Another Product" Command="{Binding AddAnotherProductCommand}" HorizontalAlignment="Center"/>
+                <Button Content="Go Back" Command="{Binding AddAnotherProductCommand}" HorizontalAlignment="Center"
+                        Margin="0,15,0,0"/>
             </StackPanel>
         </Grid>
     </Border>

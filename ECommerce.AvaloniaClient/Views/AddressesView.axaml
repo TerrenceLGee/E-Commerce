@@ -6,10 +6,11 @@
              x:Class="ECommerce.AvaloniaClient.Views.AddressesView"
              xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
              x:DataType="vm:AddressesViewModel">
-    <Grid RowDefinitions="Auto, Auto, *, Auto" Margin="10">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" Margin="10">
         <TextBlock Grid.Row="0" Text="All Addresses" FontSize="24" FontWeight="Bold"/>
+        <ProgressBar Grid.Row="1" IsIndeterminate="True" IsVisible="{Binding IsLoading}"/>
         
-        <Border Grid.Row="1" Padding="10" CornerRadius="3" Background="#3333">
+        <Border Grid.Row="2" Padding="10" CornerRadius="3" Background="#3333">
            <WrapPanel ItemSpacing="15" VerticalAlignment="Center">
                
                <StackPanel Spacing="5" Orientation="Horizontal">
@@ -58,7 +59,7 @@
                </StackPanel>
            </WrapPanel>
         </Border>
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="3"
                   ItemsSource="{Binding Addresses}"
                   SelectedItem="{Binding SelectedAddress}"
                   IsReadOnly="True"
@@ -76,7 +77,7 @@
                 <DataGridTextColumn Header="Address Type" Binding="{Binding AddressType}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
-        <StackPanel Grid.Row="3"
+        <StackPanel Grid.Row="4"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right"
                     Spacing="10">

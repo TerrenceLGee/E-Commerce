@@ -70,7 +70,7 @@ public partial class AddCategoryViewModel : ObservableValidator
             ErrorMessage = null;
             WeakReferenceMessenger
                 .Default
-                .Send(new CategoryAddedMessage());
+                .Send(new CategoryRefreshMessage());
         }
         else
         {

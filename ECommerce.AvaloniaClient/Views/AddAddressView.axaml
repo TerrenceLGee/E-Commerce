@@ -63,9 +63,10 @@
                            TextAlignment="Center"
                            Margin="0,10"/>
                 
-                <Button Content="Add Another Address"
+                <Button Content="Go Back"
                         Command="{Binding AddAnotherAddressCommand}"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center"
+                        Margin="0,15,0,0"/>
             </StackPanel>
         </Grid>
     </Border>

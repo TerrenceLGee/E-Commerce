@@ -122,8 +122,7 @@ public partial class CreateSaleViewModel : ObservableValidator
     public string? NotesErrors => GetErrors(nameof(Notes))
         .FirstOrDefault()?
         .ErrorMessage;
-
-    [ObservableProperty] private bool _isLoading;
+    
     [ObservableProperty] private int _currentAddressPage = 1;
     [ObservableProperty] private int _currentProductPage = 1;
     [ObservableProperty] private int _totalAddressPages;
@@ -172,7 +171,7 @@ public partial class CreateSaleViewModel : ObservableValidator
             ErrorMessage = null;
             WeakReferenceMessenger
                 .Default
-                .Send(new SaleAddedMessage());
+                .Send(new SaleRefreshMessage());
         }
         else
         {
@@ -183,8 +182,6 @@ public partial class CreateSaleViewModel : ObservableValidator
     [RelayCommand]
     private async Task LoadAddressesAsync()
     {
-        IsLoading = true;
-
         var queryParams = new AddressQueryParams { PageNumber = CurrentAddressPage, PageSize = AddressPageSize };
 
         var pagedResult = await _addressApiService.GetAllAddressesAsync(queryParams);
@@ -200,7 +197,6 @@ public partial class CreateSaleViewModel : ObservableValidator
             TotalAddressPages = pagedResult.TotalPages;
             TotalAddressCount = pagedResult.TotalCount;
         }
-        IsLoading = false;
         
         OnPropertyChanged(nameof(CanGoToPreviousAddressPage));
         OnPropertyChanged(nameof(CanGoToNextAddressPage));
@@ -229,7 +225,6 @@ public partial class CreateSaleViewModel : ObservableValidator
     [RelayCommand]
     private async Task LoadProductsAsync()
     {
-        IsLoading = true;
 
         var queryParams = new ProductQueryParams { PageNumber = CurrentProductPage, PageSize = ProductPageSize};
 
@@ -246,7 +241,6 @@ public partial class CreateSaleViewModel : ObservableValidator
             TotalProductPages = pagedResult.TotalPages;
             TotalProductCount = pagedResult.TotalCount;
         }
-        IsLoading = false;
         
         OnPropertyChanged(nameof(CanGoToPreviousProductPage));
         OnPropertyChanged(nameof(CanGoToNextProductPage));

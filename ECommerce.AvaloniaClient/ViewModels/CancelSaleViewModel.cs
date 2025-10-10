@@ -24,7 +24,6 @@ public partial class CancelSaleViewModel : ObservableObject
     [ObservableProperty] private SaleResponse? _selectedSale;
     [ObservableProperty] private string? _successMessage;
     [ObservableProperty] private string? _errorMessage;
-    [ObservableProperty] private bool _isLoading;
     [ObservableProperty] private int _currentPage = 1;
     [ObservableProperty] private int _totalPages;
     [ObservableProperty] private int _pageSize = 10;
@@ -36,13 +35,8 @@ public partial class CancelSaleViewModel : ObservableObject
     [RelayCommand]
     private async Task InitializeAsync()
     {
-        IsLoading = true;
 
-        var queryParams = new SaleQueryParams
-        {
-            PageNumber = CurrentPage,
-            PageSize = PageSize
-        };
+        var queryParams = new SaleQueryParams { PageNumber = CurrentPage, PageSize = PageSize };
         
         var pagedResult = await _salesApiService.GetAllSalesAsync(queryParams);
 
@@ -57,7 +51,6 @@ public partial class CancelSaleViewModel : ObservableObject
             TotalPages = pagedResult.TotalPages;
             TotalCount = pagedResult.TotalCount;
         }
-        IsLoading = false;
         
         OnPropertyChanged(nameof(CanGoToPreviousPage));
         OnPropertyChanged(nameof(CanGoToNextPage));
@@ -97,7 +90,7 @@ public partial class CancelSaleViewModel : ObservableObject
             SelectedSale = null;
             WeakReferenceMessenger
                 .Default
-                .Send(new SaleAddedMessage());
+                .Send(new SaleRefreshMessage());
         }
         else
         {

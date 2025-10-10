@@ -13,7 +13,6 @@ public partial class AddressDetailViewModel : ObservableObject
     public event Action? BackRequested;
 
     [ObservableProperty] private AddressResponse? _selectedAddress;
-    [ObservableProperty] private bool _isLoading;
 
     public AddressDetailViewModel(IAddressApiService addressApiService)
     {
@@ -28,10 +27,6 @@ public partial class AddressDetailViewModel : ObservableObject
 
     public async Task InitializeAsync(int addressId)
     {
-        IsLoading = true;
-
         SelectedAddress = await _addressApiService.GetAddressByIdAsync(addressId);
-
-        IsLoading = false;
     }
 }

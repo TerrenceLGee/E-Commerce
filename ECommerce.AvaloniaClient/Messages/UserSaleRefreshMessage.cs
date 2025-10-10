@@ -1,6 +1,6 @@
 namespace ECommerce.AvaloniaClient.Messages;
 
-public class UserSaleAddedMessage
+public class UserSaleRefreshMessage
 {
     
 }

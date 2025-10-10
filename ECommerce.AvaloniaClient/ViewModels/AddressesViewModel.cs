@@ -13,7 +13,7 @@ using ECommerce.Shared.Enums;
 
 namespace ECommerce.AvaloniaClient.ViewModels;
 
-public partial class AddressesViewModel : ObservableObject, IRecipient<AddressAddedMessage>
+public partial class AddressesViewModel : ObservableRecipient, IRecipient<AddressRefreshMessage>
 {
     private readonly IAddressApiService _addressApiService;
     public ObservableCollection<AddressResponse> Addresses { get; } = [];
@@ -50,7 +50,7 @@ public partial class AddressesViewModel : ObservableObject, IRecipient<AddressAd
     public AddressesViewModel(IAddressApiService addressApiService)
     {
         _addressApiService = addressApiService;
-        WeakReferenceMessenger.Default.Register(this);
+        IsActive = true;
         LoadAddressesCommand.Execute(null);
     }
 
@@ -121,8 +121,9 @@ public partial class AddressesViewModel : ObservableObject, IRecipient<AddressAd
         }
     }
 
-    public void Receive(AddressAddedMessage message)
+    public void Receive(AddressRefreshMessage message)
     {
         LoadAddressesCommand.Execute(null);
     }
+    
 }

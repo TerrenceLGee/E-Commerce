@@ -13,7 +13,6 @@ public partial class CategoryDetailViewModel : ObservableObject
     public event Action? BackRequested;
 
     [ObservableProperty] private CategoryResponse? _selectedCategory;
-    [ObservableProperty] private bool _isLoading;
 
     public CategoryDetailViewModel(ICategoriesApiService categoriesApiService)
     {
@@ -28,10 +27,6 @@ public partial class CategoryDetailViewModel : ObservableObject
 
     public async Task InitializeAsync(int categoryId)
     {
-        IsLoading = true;
-
         SelectedCategory = await _categoriesApiService.GetCategoryByIdAsync(categoryId);
-
-        IsLoading = false;
     }
 }

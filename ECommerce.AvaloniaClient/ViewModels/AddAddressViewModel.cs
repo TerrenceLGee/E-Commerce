@@ -116,7 +116,7 @@ public partial class AddAddressViewModel : ObservableValidator
             ErrorMessage = null;
             WeakReferenceMessenger
                 .Default
-                .Send(new AddressAddedMessage());
+                .Send(new AddressRefreshMessage());
         }
         else
         {

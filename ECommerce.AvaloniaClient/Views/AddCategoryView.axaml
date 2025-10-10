@@ -41,7 +41,8 @@
                 <TextBlock Text="Category Added Successfully!" FontSize="22" FontWeight="Bold" Foreground="LightGreen" HorizontalAlignment="Center"/>
                 <TextBlock Text="{Binding AddedCategory.Name, FallbackValue='Unable to display category name'}"/>
                 <TextBlock Text="{Binding AddedCategory.Description, FallbackValue='Unable to display category description'}"/>
-                <Button Content="Add Another Category" Command="{Binding AddAnotherCategoryCommand}" HorizontalAlignment="Center"/>
+                <Button Content="Go Back" Command="{Binding AddAnotherCategoryCommand}" HorizontalAlignment="Center"
+                        Margin="0,15,0,0"/>
             </StackPanel>
         </Grid>
     </Border>

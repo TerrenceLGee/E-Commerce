@@ -122,7 +122,7 @@ public partial class AddProductViewModel : ObservableValidator
     }
 
     [RelayCommand]
-    public async Task AddProduct()
+    private async Task AddProduct()
     {
         ErrorMessage = null;
 
@@ -153,7 +153,7 @@ public partial class AddProductViewModel : ObservableValidator
             ErrorMessage = null;
             WeakReferenceMessenger
                 .Default
-                .Send(new ProductAddedMessage());
+                .Send(new ProductRefreshMessage());
         }
         else
         {

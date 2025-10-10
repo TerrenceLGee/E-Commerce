@@ -13,7 +13,7 @@ using ECommerce.Shared.Enums;
 
 namespace ECommerce.AvaloniaClient.ViewModels;
 
-public partial class CategoriesViewModel : ObservableObject, IRecipient<CategoryAddedMessage>
+public partial class CategoriesViewModel : ObservableRecipient, IRecipient<CategoryRefreshMessage>
 {
     private readonly ICategoriesApiService _categoriesApiService;
     public ObservableCollection<CategoryResponse> Categories { get; } = [];
@@ -43,7 +43,7 @@ public partial class CategoriesViewModel : ObservableObject, IRecipient<Category
     public CategoriesViewModel(ICategoriesApiService categoriesApiService)
     {
         _categoriesApiService = categoriesApiService;
-        WeakReferenceMessenger.Default.Register(this);
+        IsActive = true;
         LoadCategoriesCommand.Execute(null);
     }
 
@@ -107,7 +107,7 @@ public partial class CategoriesViewModel : ObservableObject, IRecipient<Category
         }
     }
 
-    public void Receive(CategoryAddedMessage message)
+    public void Receive(CategoryRefreshMessage message)
     {
         LoadCategoriesCommand.Execute(null);
     }
