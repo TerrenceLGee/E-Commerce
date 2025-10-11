@@ -1,0 +1,83 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.SalesView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:SalesViewModel">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" Margin="10">
+        <TextBlock Grid.Row="0" Text="All Sales" FontSize="24" FontWeight="Bold"/>
+        <ProgressBar Grid.Row="1" IsIndeterminate="True" IsVisible="{Binding IsLoading}"/>
+        
+        <Border Grid.Row="2" Padding="10" CornerRadius="3" Background="#3333">
+            <WrapPanel ItemSpacing="15" VerticalAlignment="Center">
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Sale Creation Date: " VerticalAlignment="Center"/>
+                    <DatePicker SelectedDate="{Binding FilterByCreatedAtOffset, Mode=TwoWay}"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Sale Update Date: " VerticalAlignment="Center"/>
+                    <DatePicker SelectedDate="{Binding FilterByUpdatedAtOffset, Mode=TwoWay}"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Customer Id: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByCustomerId, Mode=TwoWay}" Watermark="Enter customer id..." Width="200"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Min Total: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByMinPrice, Mode=TwoWay}" Watermark="Enter min total..." Width="200"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Max Total: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByMaxPrice, Mode=TwoWay}" Watermark="Enter max total..." Width="200"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Sale Status: " VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding SaleStatuses}"
+                              SelectedItem="{Binding FilterBySaleStatus}"/>
+                </StackPanel>
+                
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Order by options: " VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding SortOptions}"
+                              SelectedItem="{Binding SelectedOption}"/>
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+        <DataGrid Grid.Row="3"
+                  ItemsSource="{Binding Sales}"
+                  SelectedItem="{Binding SelectedSale}"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1"
+                  BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Customer Id" Binding="{Binding CustomerId}" Width="*"/>
+                <DataGridTextColumn Header="Sale Created: " Binding="{Binding CreatedAt}" Width="*"/>
+                <DataGridTextColumn Header="Sale Updated: " Binding="{Binding UpdatedAt, FallbackValue='N/A'}"/>
+                <DataGridTextColumn Header="Sale Status" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Total Price" Binding="{Binding TotalPrice, StringFormat={}{0:C}}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+            <Button Content="&lt; Previous"
+                    Command="{Binding GoToPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoToPreviousPage}"/>
+            <TextBlock Text="{Binding CurrentPage, StringFormat='{}Page {0}'}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TotalPages, StringFormat='{}of {0}'}" VerticalAlignment="Center"/>
+            <Button Content="Next &gt;"
+                    Command="{Binding GoToNextPageCommand}"
+                    IsEnabled="{Binding CanGoToNextPage}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

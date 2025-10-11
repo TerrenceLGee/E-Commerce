@@ -1,0 +1,70 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.ProductsView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:ProductsViewModel">
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto" Margin="10">
+        <TextBlock Grid.Row="0" Text="All Products" FontSize="24" FontWeight="Bold"/>
+        <ProgressBar Grid.Row="1" IsIndeterminate="True" IsVisible="{Binding IsLoading}"/>
+        
+        <Border Grid.Row="2" Padding="10" CornerRadius="3" Background="#3333">
+            <WrapPanel ItemSpacing="15" VerticalAlignment="Center">
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Product name: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByName}" Watermark="Enter product name..." Width="200"/>
+                </StackPanel>
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Category: " VerticalAlignment="Center"/>
+                    <ComboBox ItemsSource="{Binding Categories}"
+                              SelectedItem="{Binding SelectedCategory}"
+                              DisplayMemberBinding="{Binding Name}"/>
+                </StackPanel>
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <CheckBox Content="Check to filter active status: true"
+                              IsChecked="{Binding FilterByActiveStatus}"/>
+                </StackPanel>
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Min Price: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByMinPrice}" Watermark="Filter by min price..." Width="200"/>
+                </StackPanel>
+                <StackPanel Spacing="5" Orientation="Horizontal">
+                    <TextBlock Text="Filter by Max Price: " VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding FilterByMaxPrice}" Watermark="Filter by max price..." Width="200"/>
+                </StackPanel>
+            </WrapPanel>
+        </Border>
+        
+        <DataGrid Grid.Row="3"
+                  ItemsSource="{Binding Products}"
+                  SelectedItem="{Binding SelectedProduct}"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1"
+                  BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price, StringFormat={}{0:C}}" Width="100"/>
+                <DataGridTextColumn Header="Quantity" Binding="{Binding StockQuantity}" Width="80"/>
+                <DataGridTextColumn Header="Category" Binding="{Binding Category.Name}" Width="150"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        
+        <StackPanel Grid.Row="4"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+            <Button Content="&lt; Previous"
+                    Command="{Binding GoToPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoToPreviousPage}"/>
+            <TextBlock Text="{Binding CurrentPage, StringFormat='{}Page {0}'}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TotalPages, StringFormat='{}of {0}'}" VerticalAlignment="Center"/>
+            <Button Content="Next &gt;"
+                    Command="{Binding GoToNextPageCommand}"
+                    IsEnabled="{Binding CanGoToNextPage}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

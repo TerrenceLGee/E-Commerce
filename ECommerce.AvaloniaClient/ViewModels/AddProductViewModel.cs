@@ -28,6 +28,7 @@ public partial class AddProductViewModel : ObservableValidator
     {
         _productsApiService = productsApiService;
         _categoriesApiService = categoriesApiService;
+        InitializeCommand.ExecuteAsync(null);
     }
 
     [ObservableProperty] private bool _isLoading;

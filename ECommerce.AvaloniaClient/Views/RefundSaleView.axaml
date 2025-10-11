@@ -1,0 +1,47 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.RefundSaleView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:RefundSaleViewModel">
+    <Grid RowDefinitions="Auto, *, Auto, Auto" Margin="10">
+        <TextBlock Grid.Row="0" Text="Refund A Sale" FontSize="24" FontWeight="Bold"/>
+        
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Sales}"
+                  SelectedItem="{Binding SelectedSale, Mode=TwoWay}"
+                  IsReadOnly="True"
+                  GridLinesVisibility="All"
+                  BorderThickness="1"
+                  BorderBrush="Gray">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="50"/>
+                <DataGridTextColumn Header="Customer Id" Binding="{Binding CustomerId}" Width="*"/>
+                <DataGridTextColumn Header="Sale Created" Binding="{Binding CreatedAt}" Width="*"/>
+                <DataGridTextColumn Header="Sale Status" Binding="{Binding Status}" Width="*"/>
+                <DataGridTextColumn Header="Total Price" Binding="{Binding TotalPrice, StringFormat={}{0:C}}" Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <StackPanel Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Spacing="10">
+            <Button Content="&lt; Previous"
+                    Command="{Binding GoToPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoToPreviousPage}"/>
+            <TextBlock Text="{Binding CurrentPage, StringFormat='{}Page {0}'}" VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding TotalPages, StringFormat='{}of {0}'}" VerticalAlignment="Center"/>
+            <Button Content="Next &gt;"
+                    Command="{Binding GoToNextPageCommand}"
+                    IsEnabled="{Binding CanGoToNextPage}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" HorizontalAlignment="Center" Margin="0,5">
+            <Button Content="Refund Sale" Command="{Binding RefundSaleCommand}" HorizontalAlignment="Center" Margin="0,10,0,0"
+                    IsVisible="{Binding !!SelectedSale}"/>
+            <TextBlock Text="{Binding SuccessMessage}" Foreground="LightGreen" IsVisible="{Binding !!SuccessMessage}"/>
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red" IsVisible="{Binding !!ErrorMessage}"/>
+        </StackPanel>
+    </Grid>
+</UserControl>

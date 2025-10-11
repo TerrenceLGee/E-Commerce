@@ -45,7 +45,7 @@ public partial class AddressesViewModel : ObservableRecipient, IRecipient<Addres
     [ObservableProperty] private OrderByOptions _selectedOption;
 
     public bool CanGoToPreviousPage => CurrentPage > 1;
-    public bool CanGoToNextPage => CurrentPage < _totalPages;
+    public bool CanGoToNextPage => CurrentPage < TotalPages;
 
     public AddressesViewModel(IAddressApiService addressApiService)
     {

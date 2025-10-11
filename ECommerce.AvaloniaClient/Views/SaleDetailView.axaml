@@ -1,0 +1,65 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="ECommerce.AvaloniaClient.Views.SaleDetailView"
+             xmlns:vm="using:ECommerce.AvaloniaClient.ViewModels"
+             x:DataType="vm:SaleDetailViewModel">
+    <Grid RowDefinitions="Auto, *" Margin="10">
+        <StackPanel Grid.Row="0">
+            <Button Content="Back To All Sales"
+                    Command="{Binding GoBackCommand}"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,15"/>
+            <TextBlock Text="Sale Details" FontSize="24" FontWeight="Bold" Margin="0,0,0,15"/>
+            <Border Padding="15" CornerRadius="5" Background="#3a3a3a">
+                <StackPanel Spacing="10">
+                    <WrapPanel>
+                        <TextBlock Text="Customer Id: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.CustomerId, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Created At: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.CreatedAt, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Updated At: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.UpdatedAt, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Status: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.Status, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Total Price: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.TotalPrice, StringFormat={}{0:C}, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                    <WrapPanel>
+                        <TextBlock Text="Notes: " FontWeight="Bold"/>
+                        <TextBlock Text="{Binding SelectedSale.Notes, FallbackValue='N/A'}"/>
+                    </WrapPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        <DockPanel Grid.Row="1" Margin="0,20,0,0">
+            <TextBlock Text="Items In This Sale" FontSize="20" FontWeight="Bold" DockPanel.Dock="Top" Margin="0,0,0,10"/>
+            <ProgressBar IsIndeterminate="True" IsVisible="{Binding IsLoading}" DockPanel.Dock="Top"/>
+            <DataGrid ItemsSource="{Binding SelectedSale.SaleItems, FallbackValue='N/A'}"
+                      IsReadOnly="True"
+                      GridLinesVisibility="All"
+                      BorderThickness="1"
+                      BorderBrush="Gray">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Product Id" Binding="{Binding ProductId}" Width="50"/>
+                    <DataGridTextColumn Header="Product Name" Binding="{Binding ProductName}" Width="*"/>
+                    <DataGridTextColumn Header="Quantity Purchased" Binding="{Binding Quantity}" Width="*"/>
+                    <DataGridTextColumn Header="Unit Price" Binding="{Binding UnitPrice, StringFormat={}{0:C}}" Width="*"/>
+                    <DataGridTextColumn Header="Discount Price" Binding="{Binding DiscountPrice, StringFormat={}{0:C}}" Width="*"/>
+                    <DataGridTextColumn Header="Gross Price" Binding="{Binding GrossPrice, StringFormat={}{0:C}}" Width="*"/>
+                    <DataGridTextColumn Header="Final Price" Binding="{Binding FinalPrice, StringFormat={}{0:C}}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+        </DockPanel>
+    </Grid>
+</UserControl>
